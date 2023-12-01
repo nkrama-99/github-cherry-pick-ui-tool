@@ -1,5 +1,5 @@
-import { Button, Container, Paper, Typography } from "@mui/material";
-import { Dispatch, FC, SetStateAction, useState } from "react";
+import { Button, Container } from "@mui/material";
+import { FC, useState } from "react";
 import FindStep from "./FindStep";
 import ReviewStep from "./ReviewStep";
 import CompleteStep from "./CompleteStep";
@@ -43,7 +43,15 @@ const MainBody: FC<MainProps> = ({ githubToken }) => {
             setPR={setPR}
           />
         )}
-        {stage >= 1 && <ReviewStep />}
+        {stage >= 1 && (
+          <ReviewStep
+            githubToken={githubToken}
+            nextStage={nextStage}
+            owner={owner}
+            repo={repo}
+            pr={pr}
+          />
+        )}
         {stage >= 2 && <CompleteStep />}
       </Container>
     </Container>
