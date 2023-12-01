@@ -196,7 +196,7 @@ export async function createCherryPickPR(
   pr: number,
   targetBranch: string,
   commits: Commit[]
-): Promise<Commit[]> {
+): Promise<void> {
   try {
     const octokit = instantiateOctokit(token);
 
@@ -244,9 +244,9 @@ export async function createCherryPickPR(
     console.log("STEP 3");
 
     const newBranchName =
-      targetBranch +
-      "_" +
       sourceBranch +
+      "_" +
+      targetBranch +
       "_" +
       Math.floor(Math.random() * BRANCH_NAME_RANDOM_NUMBER_LIMIT);
 
@@ -316,9 +316,23 @@ export async function createCherryPickPR(
       );
     }
 
-    return [];
+    // -- create PR
+    console.log("STEP 5");
+    await octokit.request("POST /repos/{owner}/{repo}/pulls", {
+      owner: owner,
+      repo: repo,
+      title: prTitle + " (merge to " + targetBranch + ")",
+      body: "Cherry-picked from #" + pr,
+      head: newBranchName,
+      base: targetBranch,
+      headers: {
+        "X-GitHub-Api-Version": "2022-11-28",
+      },
+    });
+
+    return;
   } catch (error) {
     console.error("Error fetching commits:", error);
-    return [];
+    return;
   }
 }
