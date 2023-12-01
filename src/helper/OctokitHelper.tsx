@@ -260,101 +260,111 @@ export async function createCherryPickPR(
       },
     });
 
-    const newBranchInfo = await octokit.request(
-      "GET /repos/{owner}/{repo}/branches/{branch}",
-      {
-        owner: owner,
-        repo: repo,
-        branch: newBranchName,
-        headers: {
-          "X-GitHub-Api-Version": "2022-11-28",
-        },
-      }
-    );
-
-    const newBranchSha = newBranchInfo.data.commit.sha;
-    const newBranchTreeSha = newBranchInfo.data.commit.commit.tree.sha;
-    console.log("newBranchSharef", newBranchSha);
-    console.log("newBranchTreeSha", newBranchTreeSha);
-
     // -- start picking
-    console.log("STEP 4a");
-    let parentCommit = commits[0];
-    const tempCommit = await octokit.request(
-      "POST /repos/{owner}/{repo}/git/commits",
-      {
-        owner: owner,
-        repo: repo,
-        tree: newBranchTreeSha,
-        message: "TEMP" + parentCommit.Message,
-        parents: [parentCommit.Id],
-        headers: {
-          "X-GitHub-Api-Version": "2022-11-28",
-        },
-      }
-    );
-    console.log("tempCommit.data.sha", tempCommit.data.sha);
+    for (var index = 0; index < commits.length; index++) {
+      const commit = commits[index];
 
-    // -- temp force branch over to that commit
-    console.log("STEP 4b");
-    await octokit.request("PATCH /repos/{owner}/{repo}/git/refs/heads/{ref}", {
-      owner: owner,
-      repo: repo,
-      ref: newBranchName,
-      sha: tempCommit.data.sha,
-      force: true,
-      headers: {
-        "X-GitHub-Api-Version": "2022-11-28",
-      },
-    });
+      console.log(">>>> New commit:", commit.Message);
 
-    // tree of the commit we want
-    console.log("STEP 4c");
+      const newBranchInfo = await octokit.request(
+        "GET /repos/{owner}/{repo}/branches/{branch}",
+        {
+          owner: owner,
+          repo: repo,
+          branch: newBranchName,
+          headers: {
+            "X-GitHub-Api-Version": "2022-11-28",
+          },
+        }
+      );
 
-    const newBranchInfo2 = await octokit.request(
-      "GET /repos/{owner}/{repo}/branches/{branch}",
-      {
-        owner: owner,
-        repo: repo,
-        branch: newBranchName,
-        headers: {
-          "X-GitHub-Api-Version": "2022-11-28",
-        },
-      }
-    );
+      const newBranchSha = newBranchInfo.data.commit.sha;
+      const newBranchTreeSha = newBranchInfo.data.commit.commit.tree.sha;
+      console.log("newBranchSharef", newBranchSha);
+      console.log("newBranchTreeSha", newBranchTreeSha);
 
-    console.log(newBranchInfo2);
-    const mergeTreeSha = newBranchInfo2.data.commit.commit.tree.sha;
-    console.log("mergeTreeSha", mergeTreeSha);
+      console.log("STEP 4a");
+      const tempCommit = await octokit.request(
+        "POST /repos/{owner}/{repo}/git/commits",
+        {
+          owner: owner,
+          repo: repo,
+          tree: newBranchTreeSha,
+          message: "TEMP" + commit.Message,
+          parents: [commit.Id],
+          headers: {
+            "X-GitHub-Api-Version": "2022-11-28",
+          },
+        }
+      );
+      console.log("tempCommit.data.sha", tempCommit.data.sha);
 
-    // create cherry-pick commit
-    console.log("STEP 4d");
-    const cherryPickCommit = await octokit.request(
-      "POST /repos/{owner}/{repo}/git/commits",
-      {
-        owner: owner,
-        repo: repo,
-        tree: mergeTreeSha,
-        message: parentCommit.Message,
-        parents: [newBranchSha],
-        headers: {
-          "X-GitHub-Api-Version": "2022-11-28",
-        },
-      }
-    );
+      // -- temp force branch over to that commit
+      console.log("STEP 4b");
+      await octokit.request(
+        "PATCH /repos/{owner}/{repo}/git/refs/heads/{ref}",
+        {
+          owner: owner,
+          repo: repo,
+          ref: newBranchName,
+          sha: tempCommit.data.sha,
+          force: true,
+          headers: {
+            "X-GitHub-Api-Version": "2022-11-28",
+          },
+        }
+      );
 
-    // replace temp commit with real commit
-    console.log("STEP 4e");
-    await octokit.request("PATCH /repos/{owner}/{repo}/git/refs/heads/{ref}", {
-      owner: owner,
-      repo: repo,
-      sha: cherryPickCommit.data.sha,
-      ref: newBranchName,
-      force: true,
-      headers: {
-        "X-GitHub-Api-Version": "2022-11-28",
-      },
-    });
+      // tree of the commit we want
+      console.log("STEP 4c");
+
+      const newBranchInfo2 = await octokit.request(
+        "GET /repos/{owner}/{repo}/branches/{branch}",
+        {
+          owner: owner,
+          repo: repo,
+          branch: newBranchName,
+          headers: {
+            "X-GitHub-Api-Version": "2022-11-28",
+          },
+        }
+      );
+
+      const mergeTreeSha = newBranchInfo2.data.commit.commit.tree.sha;
+      console.log("mergeTreeSha", mergeTreeSha);
+
+      // create cherry-pick commit
+      console.log("STEP 4d");
+      const cherryPickCommit = await octokit.request(
+        "POST /repos/{owner}/{repo}/git/commits",
+        {
+          owner: owner,
+          repo: repo,
+          tree: mergeTreeSha,
+          message: commit.Message,
+          parents: [newBranchSha],
+          headers: {
+            "X-GitHub-Api-Version": "2022-11-28",
+          },
+        }
+      );
+
+      // replace temp commit with real commit
+      console.log("STEP 4e");
+      await octokit.request(
+        "PATCH /repos/{owner}/{repo}/git/refs/heads/{ref}",
+        {
+          owner: owner,
+          repo: repo,
+          sha: cherryPickCommit.data.sha,
+          ref: newBranchName,
+          force: true,
+          headers: {
+            "X-GitHub-Api-Version": "2022-11-28",
+          },
+        }
+      );
+    }
 
     return [];
   } catch (error) {
