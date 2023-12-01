@@ -5,7 +5,6 @@ const BRANCH_NAME_RANDOM_NUMBER_LIMIT = 101;
 export interface Commit {
   Id: string;
   Message: string;
-  parentSha: string;
 }
 
 const instantiateOctokit = (token: string) => {
@@ -39,155 +38,13 @@ export async function getCommitsInPR(
       return {
         Id: commitInfo.sha,
         Message: commitInfo.commit.message,
-        parentSha: commitInfo.parents[0].sha,
       };
     });
-    // return mapToCommitList(response.data);
   } catch (error) {
     console.error("Error fetching commits:", error);
     return [];
   }
 }
-
-// export async function createCherryPickPR_OLD(
-//   token: string,
-//   owner: string,
-//   repo: string,
-//   pr: number,
-//   targetBranch: string,
-//   commits: Commit[]
-// ): Promise<Commit[]> {
-//   try {
-//     const octokit = instantiateOctokit(token);
-
-//     // https://chat.openai.com/share/f0c48674-4bea-418d-ab63-2794a8ad572a
-
-//     // -- retrieve original PR info
-//     const originalPrInfo = await octokit.request(
-//       "GET /repos/{owner}/{repo}/pulls/{pull_number}",
-//       {
-//         owner: owner,
-//         repo: repo,
-//         pull_number: pr,
-//         headers: {
-//           "X-GitHub-Api-Version": "2022-11-28",
-//         },
-//       }
-//     );
-
-//     const prTitle = originalPrInfo.data.title;
-//     const sourceBranch = originalPrInfo.data.head.ref;
-//     console.log("STEP 1");
-//     console.log("prTitle:", prTitle);
-//     console.log("sourceBranch:", sourceBranch);
-//     console.log(commits);
-
-//     // -- retrieve target branch info
-//     const targetBranchInfo = await octokit.request(
-//       "GET /repos/{owner}/{repo}/branches/{branch}",
-//       {
-//         owner: owner,
-//         repo: repo,
-//         branch: targetBranch,
-//         headers: {
-//           "X-GitHub-Api-Version": "2022-11-28",
-//         },
-//       }
-//     );
-
-//     const targetBranchBaseCommitSha = targetBranchInfo.data.commit.sha;
-//     console.log("STEP 2");
-//     console.log("targetBranchBaseCommitSha", targetBranchBaseCommitSha);
-
-//     // -- Create a new branch off of target branch
-//     const newBranchName =
-//       targetBranch +
-//       "_" +
-//       sourceBranch +
-//       "_" +
-//       Math.floor(Math.random() * BRANCH_NAME_RANDOM_NUMBER_LIMIT);
-
-//     const newBranchInfo = await octokit.request(
-//       "POST /repos/{owner}/{repo}/git/refs",
-//       {
-//         owner: owner,
-//         repo: repo,
-//         ref: "refs/heads/" + newBranchName,
-//         sha: targetBranchBaseCommitSha,
-//         headers: {
-//           "X-GitHub-Api-Version": "2022-11-28",
-//         },
-//       }
-//     );
-
-//     console.log("STEP 3");
-//     console.log(newBranchInfo);
-//     console.log("newBranchInfo.data.ref", newBranchInfo.data.ref);
-
-//     // -- Create new tree and add commits to it
-//     const newTreeInfo = await octokit.request(
-//       "POST /repos/{owner}/{repo}/git/trees",
-//       {
-//         owner: owner,
-//         repo: repo,
-//         sha: targetBranchBaseCommitSha,
-//         tree: commits.map((commit) => ({
-//           // path: `path/to/file`,
-//           mode: "100644",
-//           type: "blob",
-//           sha: commit.Id,
-//         })),
-//         headers: {
-//           "X-GitHub-Api-Version": "2022-11-28",
-//         },
-//       }
-//     );
-
-//     // -- Cherry-pick changes into new branch
-//     // console.log("STEP 4");
-//     // for (const commit of commits) {
-//     //   await octokit.request("POST /repos/{owner}/{repo}/git/refs", {
-//     //     owner: owner,
-//     //     repo: repo,
-//     //     ref: "refs/heads/" + "temp" + commit.Id,
-//     //     sha: commit.Id,
-//     //     headers: {
-//     //       "X-GitHub-Api-Version": "2022-11-28",
-//     //     },
-//     //   });
-
-//     //   await octokit.request("POST /repos/{owner}/{repo}/merges", {
-//     //     owner: owner,
-//     //     repo: repo,
-//     //     base: "refs/heads/" + newBranchName,
-//     //     head: "refs/heads/" + "temp" + commit.Id,
-//     //     headers: {
-//     //       "X-GitHub-Api-Version": "2022-11-28",
-//     //     },
-//     //   });
-
-//     //   console.log("cherry-pick done", commit.Id, commit.Message);
-//     // }
-
-//     // Create PR for new branch
-//     // const newPr = await octokit.request("POST /repos/{owner}/{repo}/pulls", {
-//     //   owner: owner,
-//     //   repo: repo,
-//     //   title: "Amazing new feature",
-//     //   body: "Please pull these awesome changes in!",
-//     //   head: "new-feature-branch",
-//     //   base: targetBranch,
-//     //   headers: {
-//     //     "X-GitHub-Api-Version": "2022-11-28",
-//     //   },
-//     // });
-
-//     return [];
-//   } catch (error) {
-//     console.error("Error fetching commits:", error);
-//     return [];
-//   }
-// }
 
 export async function createCherryPickPR(
   token: string,
@@ -200,139 +57,212 @@ export async function createCherryPickPR(
   try {
     const octokit = instantiateOctokit(token);
 
+    console.log(">>>>>>>>>>>>> START");
+
     // -- retrieve original PR info
     console.log("STEP 1");
-
-    const originalPrInfo = await octokit.request(
-      "GET /repos/{owner}/{repo}/pulls/{pull_number}",
-      {
-        owner: owner,
-        repo: repo,
-        pull_number: pr,
-        headers: {
-          "X-GitHub-Api-Version": "2022-11-28",
-        },
-      }
-    );
-
-    const prTitle = originalPrInfo.data.title;
-    const sourceBranch = originalPrInfo.data.head.ref;
-
-    console.log("prTitle:", prTitle);
-    console.log("sourceBranch:", sourceBranch);
-    console.log(commits);
+    const { prTitle, sourceBranch } = await getPrInfo(octokit, owner, repo, pr);
+    // console.log("prTitle:", prTitle);
+    // console.log("sourceBranch:", sourceBranch);
+    // console.log(commits);
 
     // -- retrieve target branch info
     console.log("STEP 2");
-
-    const targetBranchInfo = await octokit.request(
-      "GET /repos/{owner}/{repo}/branches/{branch}",
-      {
-        owner: owner,
-        repo: repo,
-        branch: targetBranch,
-        headers: {
-          "X-GitHub-Api-Version": "2022-11-28",
-        },
-      }
+    const targetBranchBaseCommitSha = await getTargetBranchInfo(
+      octokit,
+      owner,
+      repo,
+      targetBranch
     );
-
-    const targetBranchBaseCommitSha = targetBranchInfo.data.commit.sha;
-    console.log("targetBranchBaseCommitSha", targetBranchBaseCommitSha);
+    // console.log("targetBranchBaseCommitSha", targetBranchBaseCommitSha);
 
     // -- Create a new branch off of target branch
     console.log("STEP 3");
-
     const newBranchName =
       sourceBranch +
       "_" +
       targetBranch +
       "_" +
       Math.floor(Math.random() * BRANCH_NAME_RANDOM_NUMBER_LIMIT);
-
-    await octokit.request("POST /repos/{owner}/{repo}/git/refs", {
-      owner: owner,
-      repo: repo,
-      ref: "refs/heads/" + newBranchName,
-      sha: targetBranchBaseCommitSha,
-      headers: {
-        "X-GitHub-Api-Version": "2022-11-28",
-      },
-    });
+    await createNewBranch(
+      octokit,
+      owner,
+      repo,
+      newBranchName,
+      targetBranchBaseCommitSha
+    );
 
     // -- start picking
+    console.log("STEP 4");
     for (var index = 0; index < commits.length; index++) {
-      const commit = commits[index];
-
-      console.log(">>>> New commit:", commit.Message);
-
-      const newBranchInfo = await octokit.request(
-        "GET /repos/{owner}/{repo}/branches/{branch}",
-        {
-          owner: owner,
-          repo: repo,
-          branch: newBranchName,
-          headers: {
-            "X-GitHub-Api-Version": "2022-11-28",
-          },
-        }
-      );
-
-      const newBranchSha = newBranchInfo.data.commit.sha;
-      const newBranchTreeSha = newBranchInfo.data.commit.commit.tree.sha;
-      console.log("newBranchSharef", newBranchSha);
-      console.log("newBranchTreeSha", newBranchTreeSha);
-
-      console.log("STEP 4a");
-      const tempCommit = await octokit.request(
-        "POST /repos/{owner}/{repo}/git/commits",
-        {
-          owner: owner,
-          repo: repo,
-          tree: newBranchTreeSha,
-          message: "TEMP" + commit.Message,
-          parents: [commit.Id],
-          headers: {
-            "X-GitHub-Api-Version": "2022-11-28",
-          },
-        }
-      );
-      console.log("tempCommit.data.sha", tempCommit.data.sha);
-
-      // -- temp force branch over to the correct commit
-      console.log("STEP 4b");
-      await octokit.request(
-        "PATCH /repos/{owner}/{repo}/git/refs/heads/{ref}",
-        {
-          owner: owner,
-          repo: repo,
-          ref: newBranchName,
-          sha: tempCommit.data.parents[0].sha,
-          force: true,
-          headers: {
-            "X-GitHub-Api-Version": "2022-11-28",
-          },
-        }
+      await cherryPickCommit(
+        commits[index],
+        octokit,
+        owner,
+        repo,
+        newBranchName
       );
     }
 
     // -- create PR
     console.log("STEP 5");
-    await octokit.request("POST /repos/{owner}/{repo}/pulls", {
-      owner: owner,
-      repo: repo,
-      title: prTitle + " (merge to " + targetBranch + ")",
-      body: "Cherry-picked from #" + pr,
-      head: newBranchName,
-      base: targetBranch,
-      headers: {
-        "X-GitHub-Api-Version": "2022-11-28",
-      },
-    });
+    await createPrToTargetBranch(
+      octokit,
+      owner,
+      repo,
+      prTitle,
+      targetBranch,
+      pr,
+      newBranchName
+    );
+
+    console.log(">>>>>>>>>>>>> COMPLETE");
 
     return;
   } catch (error) {
     console.error("Error fetching commits:", error);
     return;
   }
+}
+
+async function createPrToTargetBranch(
+  octokit: Octokit,
+  owner: string,
+  repo: string,
+  prTitle: string,
+  targetBranch: string,
+  pr: number,
+  newBranchName: string
+) {
+  await octokit.request("POST /repos/{owner}/{repo}/pulls", {
+    owner: owner,
+    repo: repo,
+    title: prTitle + " (merge to " + targetBranch + ")",
+    body: "Cherry-picked from #" + pr,
+    head: newBranchName,
+    base: targetBranch,
+    headers: {
+      "X-GitHub-Api-Version": "2022-11-28",
+    },
+  });
+}
+
+async function cherryPickCommit(
+  commit: Commit,
+  octokit: Octokit,
+  owner: string,
+  repo: string,
+  newBranchName: string
+) {
+  // console.log(">>>> New commit:", commit.Message);
+
+  const newBranchInfo = await octokit.request(
+    "GET /repos/{owner}/{repo}/branches/{branch}",
+    {
+      owner: owner,
+      repo: repo,
+      branch: newBranchName,
+      headers: {
+        "X-GitHub-Api-Version": "2022-11-28",
+      },
+    }
+  );
+
+  // const newBranchSha = newBranchInfo.data.commit.sha;
+  const newBranchTreeSha = newBranchInfo.data.commit.commit.tree.sha;
+  // console.log("newBranchSharef", newBranchSha);
+  // console.log("newBranchTreeSha", newBranchTreeSha);
+
+  // console.log("STEP 4a");
+  const tempCommit = await octokit.request(
+    "POST /repos/{owner}/{repo}/git/commits",
+    {
+      owner: owner,
+      repo: repo,
+      tree: newBranchTreeSha,
+      message: "TEMP" + commit.Message,
+      parents: [commit.Id],
+      headers: {
+        "X-GitHub-Api-Version": "2022-11-28",
+      },
+    }
+  );
+  // console.log("tempCommit.data.sha", tempCommit.data.sha);
+
+  // -- temp force branch over to the correct commit
+  // console.log("STEP 4b");
+  await octokit.request("PATCH /repos/{owner}/{repo}/git/refs/heads/{ref}", {
+    owner: owner,
+    repo: repo,
+    ref: newBranchName,
+    sha: tempCommit.data.parents[0].sha,
+    force: true,
+    headers: {
+      "X-GitHub-Api-Version": "2022-11-28",
+    },
+  });
+}
+
+async function createNewBranch(
+  octokit: Octokit,
+  owner: string,
+  repo: string,
+  newBranchName: string,
+  targetBranchBaseCommitSha: string
+) {
+  await octokit.request("POST /repos/{owner}/{repo}/git/refs", {
+    owner: owner,
+    repo: repo,
+    ref: "refs/heads/" + newBranchName,
+    sha: targetBranchBaseCommitSha,
+    headers: {
+      "X-GitHub-Api-Version": "2022-11-28",
+    },
+  });
+}
+
+async function getTargetBranchInfo(
+  octokit: Octokit,
+  owner: string,
+  repo: string,
+  targetBranch: string
+) {
+  const targetBranchInfo = await octokit.request(
+    "GET /repos/{owner}/{repo}/branches/{branch}",
+    {
+      owner: owner,
+      repo: repo,
+      branch: targetBranch,
+      headers: {
+        "X-GitHub-Api-Version": "2022-11-28",
+      },
+    }
+  );
+
+  const targetBranchBaseCommitSha = targetBranchInfo.data.commit.sha;
+  return targetBranchBaseCommitSha;
+}
+
+async function getPrInfo(
+  octokit: Octokit,
+  owner: string,
+  repo: string,
+  pr: number
+) {
+  const originalPrInfo = await octokit.request(
+    "GET /repos/{owner}/{repo}/pulls/{pull_number}",
+    {
+      owner: owner,
+      repo: repo,
+      pull_number: pr,
+      headers: {
+        "X-GitHub-Api-Version": "2022-11-28",
+      },
+    }
+  );
+
+  const prTitle = originalPrInfo.data.title;
+  const sourceBranch = originalPrInfo.data.head.ref;
+
+  return { prTitle, sourceBranch };
 }
