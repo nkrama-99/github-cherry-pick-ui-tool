@@ -12,7 +12,7 @@ import {
   Divider,
 } from "@mui/material";
 import { FC, useEffect, useState } from "react";
-import { getCommitsInPR, Commit } from "../helper/OctokitHelper";
+import { getCommitsInPR, Commit, createCherryPickPR } from "../helper/OctokitHelper";
 import CommitIcon from "@mui/icons-material/Commit";
 
 const MAX_COMMIT_ID_LEN = 6;
@@ -59,8 +59,9 @@ const ReviewStep: FC<ReviewStepProps> = ({
   }, []);
 
   const onClickCherryPick = () => {
-    console.log("commits:", commits);
-    console.log("targetBranch:", targetBranch)
+    // console.log("commits:", commits);
+    // console.log("targetBranch:", targetBranch);
+    createCherryPickPR(githubToken, owner, repo, pr, targetBranch, commits);
     // nextStage();
   };
 
