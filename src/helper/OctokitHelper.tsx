@@ -34,7 +34,7 @@ export async function getCommitsInPR(
         },
       }
     );
-    
+
     return response.data.map((commitInfo) => {
       return {
         Id: commitInfo.sha,
@@ -308,20 +308,24 @@ export async function createCherryPickPR(
       },
     });
 
-    // merge the commit we want
+    // tree of the commit we want
     console.log("STEP 4c");
-    const merge = await octokit.request("POST /repos/{owner}/{repo}/merges", {
-      owner: owner,
-      repo: repo,
-      base: newBranchName,
-      head: parentCommit.parentSha,
-      headers: {
-        "X-GitHub-Api-Version": "2022-11-28",
-      },
-    });
 
-    console.log(merge);
-    const mergeTreeSha = merge.data.commit.tree.sha; // what it should look like
+    const newBranchInfo2 = await octokit.request(
+      "GET /repos/{owner}/{repo}/branches/{branch}",
+      {
+        owner: owner,
+        repo: repo,
+        branch: newBranchName,
+        headers: {
+          "X-GitHub-Api-Version": "2022-11-28",
+        },
+      }
+    );
+
+    console.log(newBranchInfo2);
+    const mergeTreeSha = newBranchInfo2.data.commit.commit.tree.sha;
+    console.log("mergeTreeSha", mergeTreeSha);
 
     // create cherry-pick commit
     console.log("STEP 4d");
