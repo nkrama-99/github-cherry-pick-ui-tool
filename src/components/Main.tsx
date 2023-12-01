@@ -10,28 +10,42 @@ interface MainProps {
 
 const MainBody: FC<MainProps> = ({ githubToken }) => {
   const [stage, setStage] = useState(0);
+  const [owner, setOwner] = useState("");
+  const [repo, setRepo] = useState("");
+  const [pr, setPR] = useState(-1);
+
+  const nextStage = () => {
+    if (stage == 2) {
+      setStage(0);
+    } else {
+      setStage(stage + 1);
+    }
+  };
 
   return (
     <Container component="main">
       <Button
         onClick={() => {
-          if (stage == 2) {
-            setStage(0);
-          } else {
-            setStage(stage + 1);
-          }
+          nextStage();
         }}
       >
         Test
       </Button>
-      <Paper
-        variant="outlined"
-        sx={{ my: { xs: 3, md: 6 }, p: { xs: 2, md: 3 } }}
-      >
-        {stage >= 0 && <FindStep />}
+      <Container>
+        {stage >= 0 && (
+          <FindStep
+            nextStage={nextStage}
+            owner={owner}
+            setOwner={setOwner}
+            repo={repo}
+            setRepo={setRepo}
+            pr={pr}
+            setPR={setPR}
+          />
+        )}
         {stage >= 1 && <ReviewStep />}
         {stage >= 2 && <CompleteStep />}
-      </Paper>
+      </Container>
     </Container>
   );
 };
