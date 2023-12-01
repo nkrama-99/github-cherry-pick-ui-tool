@@ -1,5 +1,6 @@
 import { Button, Container, Paper, Typography } from "@mui/material";
 import { Dispatch, FC, SetStateAction, useState } from "react";
+import DetailsStage from "./DetailsStage";
 
 interface MainProps {
   githubToken: string;
@@ -25,11 +26,7 @@ const MainBody: FC<MainProps> = ({ githubToken }) => {
         variant="outlined"
         sx={{ my: { xs: 3, md: 6 }, p: { xs: 2, md: 3 } }}
       >
-        {stage >= 0 && (
-          <Typography component="h1" variant="h4" align="center">
-            Stage 0
-          </Typography>
-        )}
+        {stage >= 0 && <DetailsStage />}
         {stage >= 1 && (
           <Typography component="h1" variant="h4" align="center">
             Stage 1
