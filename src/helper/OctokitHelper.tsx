@@ -62,9 +62,6 @@ export async function createCherryPickPR(
     // -- retrieve original PR info
     console.log("STEP 1");
     const { prTitle, sourceBranch } = await getPrInfo(octokit, owner, repo, pr);
-    // console.log("prTitle:", prTitle);
-    // console.log("sourceBranch:", sourceBranch);
-    // console.log(commits);
 
     // -- retrieve target branch info
     console.log("STEP 2");
@@ -74,7 +71,6 @@ export async function createCherryPickPR(
       repo,
       targetBranch
     );
-    // console.log("targetBranchBaseCommitSha", targetBranchBaseCommitSha);
 
     // -- Create a new branch off of target branch
     console.log("STEP 3");
@@ -117,7 +113,6 @@ export async function createCherryPickPR(
     );
 
     console.log(">>>>>>>>>>>>> COMPLETE");
-
     return;
   } catch (error) {
     console.error("Error fetching commits:", error);
@@ -154,8 +149,7 @@ async function cherryPickCommit(
   repo: string,
   newBranchName: string
 ) {
-  // console.log(">>>> New commit:", commit.Message);
-
+  // -- get branch info
   const newBranchInfo = await octokit.request(
     "GET /repos/{owner}/{repo}/branches/{branch}",
     {
@@ -167,13 +161,9 @@ async function cherryPickCommit(
       },
     }
   );
-
-  // const newBranchSha = newBranchInfo.data.commit.sha;
   const newBranchTreeSha = newBranchInfo.data.commit.commit.tree.sha;
-  // console.log("newBranchSharef", newBranchSha);
-  // console.log("newBranchTreeSha", newBranchTreeSha);
 
-  // console.log("STEP 4a");
+  // -- create the commit
   const tempCommit = await octokit.request(
     "POST /repos/{owner}/{repo}/git/commits",
     {
@@ -187,10 +177,8 @@ async function cherryPickCommit(
       },
     }
   );
-  // console.log("tempCommit.data.sha", tempCommit.data.sha);
 
   // -- temp force branch over to the correct commit
-  // console.log("STEP 4b");
   await octokit.request("PATCH /repos/{owner}/{repo}/git/refs/heads/{ref}", {
     owner: owner,
     repo: repo,
