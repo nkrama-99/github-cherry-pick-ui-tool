@@ -1,9 +1,18 @@
 import { Octokit } from "octokit";
 
 export interface Commit {
-  id: string;
-  name: string;
+  Id: string;
+  Message: string;
 }
+
+const mapToCommitList = (jsonPayload: any[]): Commit[] => {
+  return jsonPayload.map((commitInfo) => {
+    return {
+      Id: commitInfo.sha,
+      Message: commitInfo.commit.message,
+    };
+  });
+};
 
 export async function getCommitsInPR(
   token: string,
@@ -27,12 +36,10 @@ export async function getCommitsInPR(
         },
       }
     );
-
-    console.log(response);
-
-    return [];
+    
+    return mapToCommitList(response.data);
   } catch (error) {
     console.error("Error fetching commits:", error);
-    throw error;
+    return [];
   }
 }

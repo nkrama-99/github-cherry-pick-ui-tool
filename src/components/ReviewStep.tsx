@@ -30,11 +30,14 @@ const ReviewStep: FC<ReviewStepProps> = ({
     const retrieveData = async () => {
       setCommits(await getCommitsInPR(githubToken, owner, repo, pr));
     };
+    retrieveData();
+
+    return () => {};
   }, []);
 
   const onClickCherryPick = () => {
-    console.log(commits);
-  }
+    console.log("commits:", commits);
+  };
 
   return (
     <Container>
@@ -65,7 +68,7 @@ const ReviewStep: FC<ReviewStepProps> = ({
             />
           </Grid>
           <Grid item xs={12} sm={12}>
-            <Button fullWidth variant="contained">
+            <Button fullWidth variant="contained" onClick={onClickCherryPick}>
               Cherry pick
             </Button>
           </Grid>
