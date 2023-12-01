@@ -299,7 +299,7 @@ export async function createCherryPickPR(
       );
       console.log("tempCommit.data.sha", tempCommit.data.sha);
 
-      // -- temp force branch over to that commit
+      // -- temp force branch over to the correct commit
       console.log("STEP 4b");
       await octokit.request(
         "PATCH /repos/{owner}/{repo}/git/refs/heads/{ref}",
@@ -307,57 +307,7 @@ export async function createCherryPickPR(
           owner: owner,
           repo: repo,
           ref: newBranchName,
-          sha: tempCommit.data.sha,
-          force: true,
-          headers: {
-            "X-GitHub-Api-Version": "2022-11-28",
-          },
-        }
-      );
-
-      // tree of the commit we want
-      console.log("STEP 4c");
-
-      const newBranchInfo2 = await octokit.request(
-        "GET /repos/{owner}/{repo}/branches/{branch}",
-        {
-          owner: owner,
-          repo: repo,
-          branch: newBranchName,
-          headers: {
-            "X-GitHub-Api-Version": "2022-11-28",
-          },
-        }
-      );
-
-      const mergeTreeSha = newBranchInfo2.data.commit.commit.tree.sha;
-      console.log("mergeTreeSha", mergeTreeSha);
-
-      // create cherry-pick commit
-      console.log("STEP 4d");
-      const cherryPickCommit = await octokit.request(
-        "POST /repos/{owner}/{repo}/git/commits",
-        {
-          owner: owner,
-          repo: repo,
-          tree: mergeTreeSha,
-          message: commit.Message,
-          parents: [newBranchSha],
-          headers: {
-            "X-GitHub-Api-Version": "2022-11-28",
-          },
-        }
-      );
-
-      // replace temp commit with real commit
-      console.log("STEP 4e");
-      await octokit.request(
-        "PATCH /repos/{owner}/{repo}/git/refs/heads/{ref}",
-        {
-          owner: owner,
-          repo: repo,
-          sha: cherryPickCommit.data.sha,
-          ref: newBranchName,
+          sha: tempCommit.data.parents[0].sha,
           force: true,
           headers: {
             "X-GitHub-Api-Version": "2022-11-28",
