@@ -15,41 +15,47 @@ import {
   Step,
   StepLabel,
   Stepper,
+  TextField,
   Toolbar,
   Typography,
 } from "@mui/material";
 import AddressForm from "./components/AddressForm";
-
-function Copyright() {
-  return (
-    <Typography variant="body2" color="text.secondary" align="center">
-      {"Copyright © "}
-      <Link color="inherit" href="https://mui.com/">
-        Your Website
-      </Link>{" "}
-      {new Date().getFullYear()}
-      {"."}
-    </Typography>
-  );
-}
-
-const steps = ["Shipping address", "Payment details", "Review your order"];
-
-function getStepContent(step: number) {
-  switch (step) {
-    case 0:
-      return <AddressForm />;
-    case 1:
-      return <AddressForm />;
-    case 2:
-      return <AddressForm />;
-    default:
-      throw new Error("Unknown step");
-  }
-}
+import AuthenticateGithub from "./components/AuthenticateGithub";
 
 function App() {
   const [activeStep, setActiveStep] = React.useState(0);
+  const [githubToken, setGithubToken] = React.useState("");
+
+  function Copyright() {
+    return (
+      <Typography variant="body2" color="text.secondary" align="center">
+        {"Copyright © "}
+        <Link
+          color="inherit"
+          href="https://www.linkedin.com/in/ramakrishna-natarajan/"
+        >
+          Drizzy
+        </Link>{" "}
+        {new Date().getFullYear()}
+        {"."}
+      </Typography>
+    );
+  }
+
+  const steps = ["Find PR", "Verify", "Cherry-Pick"];
+
+  function getStepContent(step: number) {
+    switch (step) {
+      case 0:
+        return <AuthenticateGithub />;
+      case 1:
+        return <AddressForm />;
+      case 2:
+        return <AddressForm />;
+      default:
+        throw new Error("Unknown step");
+    }
+  }
 
   const handleNext = () => {
     setActiveStep(activeStep + 1);
@@ -72,9 +78,20 @@ function App() {
         }}
       >
         <Toolbar>
-          <Typography variant="h6" color="inherit" noWrap>
-            Company name
-          </Typography>
+          <Box justifySelf={"left"}>
+            <Typography variant="h6" color="inherit" noWrap>
+              Github Cherry-Pick Tool
+            </Typography>
+          </Box>
+          <Box paddingLeft={"10px"}>
+            <TextField
+              type="password"
+              label="Github Token"
+              onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+                setGithubToken(event.target.value);
+              }}
+            ></TextField>
+          </Box>
         </Toolbar>
       </AppBar>
       <Container component="main" maxWidth="sm" sx={{ mb: 4 }}>
