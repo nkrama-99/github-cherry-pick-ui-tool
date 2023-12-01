@@ -1,4 +1,4 @@
-import { Container, Paper, Typography } from "@mui/material";
+import { Button, Container, Paper, Typography } from "@mui/material";
 import { Dispatch, FC, SetStateAction, useState } from "react";
 
 interface MainProps {
@@ -6,17 +6,40 @@ interface MainProps {
 }
 
 const MainBody: FC<MainProps> = ({ githubToken }) => {
-  const [stage, setStage] = useState(0) 
-  
+  const [stage, setStage] = useState(0);
+
   return (
-    <Container component="main" maxWidth="sm" sx={{ mb: 4 }}>
+    <Container component="main">
+      <Button
+        onClick={() => {
+          if (stage == 2) {
+            setStage(0);
+          } else {
+            setStage(stage + 1);
+          }
+        }}
+      >
+        Test
+      </Button>
       <Paper
         variant="outlined"
         sx={{ my: { xs: 3, md: 6 }, p: { xs: 2, md: 3 } }}
       >
-        <Typography component="h1" variant="h4" align="center">
-          Let's get started
-        </Typography>
+        {stage >= 0 && (
+          <Typography component="h1" variant="h4" align="center">
+            Stage 0
+          </Typography>
+        )}
+        {stage >= 1 && (
+          <Typography component="h1" variant="h4" align="center">
+            Stage 1
+          </Typography>
+        )}
+        {stage >= 2 && (
+          <Typography component="h1" variant="h4" align="center">
+            Stage 2
+          </Typography>
+        )}
       </Paper>
     </Container>
   );
