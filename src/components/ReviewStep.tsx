@@ -27,7 +27,7 @@ interface ReviewStepProps {
 
 const CommitListItem = (item: Commit, index: number) => {
   return (
-    <ListItem key={index} divider>
+    <ListItem key={index}>
       <ListItemIcon>
         <CommitIcon />
       </ListItemIcon>
@@ -47,6 +47,7 @@ const ReviewStep: FC<ReviewStepProps> = ({
   pr,
 }) => {
   const [commits, setCommits] = useState<Commit[]>([]);
+  const [targetBranch, setTargetBranch] = useState("");
 
   useEffect(() => {
     const retrieveData = async () => {
@@ -59,6 +60,7 @@ const ReviewStep: FC<ReviewStepProps> = ({
 
   const onClickCherryPick = () => {
     console.log("commits:", commits);
+    console.log("targetBranch:", targetBranch)
     // nextStage();
   };
 
@@ -78,18 +80,29 @@ const ReviewStep: FC<ReviewStepProps> = ({
             </List>
           </Grid>
           <Grid item xs={12} sm={6}>
-            <TextField
-              required
-              label="Owner"
-              fullWidth
-              autoComplete="github-cherry-pick-tool-owner"
-              variant="standard"
-            />
-          </Grid>
-          <Grid item xs={12} sm={12}>
-            <Button fullWidth variant="contained" onClick={onClickCherryPick}>
-              Cherry pick
-            </Button>
+            <Grid container spacing={3}>
+              <Grid item xs={12} sm={12}>
+                <TextField
+                  required
+                  label="Target Branch"
+                  fullWidth
+                  autoComplete="github-cherry-pick-target-branch"
+                  variant="standard"
+                  onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+                    setTargetBranch(event.target.value);
+                  }}
+                />
+              </Grid>
+              <Grid item xs={12} sm={12}>
+                <Button
+                  fullWidth
+                  variant="contained"
+                  onClick={onClickCherryPick}
+                >
+                  Cherry pick
+                </Button>
+              </Grid>
+            </Grid>
           </Grid>
         </Grid>
       </Paper>
