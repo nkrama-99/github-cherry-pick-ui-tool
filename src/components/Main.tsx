@@ -1,6 +1,8 @@
 import { Button, Container, Paper, Typography } from "@mui/material";
 import { Dispatch, FC, SetStateAction, useState } from "react";
-import DetailsStage from "./DetailsStage";
+import FindStep from "./FindStep";
+import ReviewStep from "./ReviewStep";
+import CompleteStep from "./CompleteStep";
 
 interface MainProps {
   githubToken: string;
@@ -26,17 +28,9 @@ const MainBody: FC<MainProps> = ({ githubToken }) => {
         variant="outlined"
         sx={{ my: { xs: 3, md: 6 }, p: { xs: 2, md: 3 } }}
       >
-        {stage >= 0 && <DetailsStage />}
-        {stage >= 1 && (
-          <Typography component="h1" variant="h4" align="center">
-            Stage 1
-          </Typography>
-        )}
-        {stage >= 2 && (
-          <Typography component="h1" variant="h4" align="center">
-            Stage 2
-          </Typography>
-        )}
+        {stage >= 0 && <FindStep />}
+        {stage >= 1 && <ReviewStep />}
+        {stage >= 2 && <CompleteStep />}
       </Paper>
     </Container>
   );
