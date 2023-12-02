@@ -5,9 +5,8 @@ import {
   Grid,
   TextField,
   Button,
-  Divider,
 } from "@mui/material";
-import { FC, useState } from "react";
+import { FC } from "react";
 
 interface FindStepProps {
   nextStage: (stageId: number) => void;
@@ -32,8 +31,6 @@ const FindStep: FC<FindStepProps> = ({
   githubToken,
   setGithubToken,
 }) => {
-  const [url, setUrl] = useState("");
-
   const onClickFind = () => {
     console.log(githubToken, owner, repo, pr);
     if (githubToken && owner && repo && pr > 0) {
@@ -95,7 +92,7 @@ const FindStep: FC<FindStepProps> = ({
               variant="standard"
               placeholder="https://github.com/owner_name/repo_name/pull/pr_number"
               onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-                setGithubToken(event.target.value)
+                setGithubToken(event.target.value);
               }}
             />
           </Grid>

@@ -1,5 +1,5 @@
-import React, { Dispatch, FC, SetStateAction } from "react";
-import { AppBar, Box, Typography, TextField, Toolbar } from "@mui/material";
+import { AppBar, Toolbar, Box, Typography } from "@mui/material";
+import { FC } from "react";
 
 const NavBar: FC = () => {
   return (
