@@ -4,15 +4,12 @@ import FindStep from "./FindStep";
 import ReviewStep from "./ReviewStep";
 import CompleteStep from "./CompleteStep";
 
-interface MainProps {
-  githubToken: string;
-}
-
-const MainBody: FC<MainProps> = ({ githubToken }) => {
+const MainBody: FC = () => {
   const [stage, setStage] = useState(0);
   const [owner, setOwner] = useState("");
   const [repo, setRepo] = useState("");
   const [pr, setPR] = useState(-1);
+  const [githubToken, setGithubToken] = useState("");
 
   const nextStage = (stageId: number) => {
     setStage(stageId);
@@ -37,6 +34,8 @@ const MainBody: FC<MainProps> = ({ githubToken }) => {
             setRepo={setRepo}
             pr={pr}
             setPR={setPR}
+            githubToken={githubToken}
+            setGithubToken={setGithubToken}
           />
         )}
         {stage >= 1 && (

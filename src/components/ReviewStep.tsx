@@ -63,7 +63,14 @@ const ReviewStep: FC<ReviewStepProps> = ({
   }, []);
 
   const onClickCherryPick = async () => {
-    await createCherryPickPR(githubToken, owner, repo, pr, targetBranch, commits);
+    await createCherryPickPR(
+      githubToken,
+      owner,
+      repo,
+      pr,
+      targetBranch,
+      commits
+    );
     nextStage(2);
   };
 
@@ -121,7 +128,8 @@ const ReviewStep: FC<ReviewStepProps> = ({
             sx={{ my: { xs: 3, md: 6 }, p: { xs: 2, md: 3 } }}
           >
             <Typography component="h1" variant="h6" align="center" gutterBottom>
-              Oops this is embarassing, your PR does not exist. You need to get back to work.
+              Oops this is embarassing, your PR does not exist. You need to get
+              back to work.
             </Typography>
           </Paper>
         </>

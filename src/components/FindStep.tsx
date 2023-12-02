@@ -17,6 +17,8 @@ interface FindStepProps {
   setRepo: React.Dispatch<React.SetStateAction<string>>;
   pr: number;
   setPR: React.Dispatch<React.SetStateAction<number>>;
+  githubToken: String;
+  setGithubToken: React.Dispatch<React.SetStateAction<string>>;
 }
 
 const FindStep: FC<FindStepProps> = ({
@@ -27,15 +29,18 @@ const FindStep: FC<FindStepProps> = ({
   setRepo,
   pr,
   setPR,
+  githubToken,
+  setGithubToken,
 }) => {
   const [url, setUrl] = useState("");
 
   const onClickFind = () => {
-    if (owner && repo && pr > 0) {
-      console.log("Valid url!");
+    console.log(githubToken, owner, repo, pr);
+    if (githubToken && owner && repo && pr > 0) {
+      console.log("Valid inputs!");
       nextStage(1);
     } else {
-      console.log("Invalid url!");
+      console.log("Invalid inputs!");
     }
   };
 
@@ -66,7 +71,7 @@ const FindStep: FC<FindStepProps> = ({
           Step 1: Find your PR
         </Typography>
         <Grid container spacing={3}>
-          <Grid item xs={12} sm={12}>
+          <Grid item xs={12} sm={6}>
             <TextField
               required
               label="URL to PR"
@@ -75,8 +80,22 @@ const FindStep: FC<FindStepProps> = ({
               variant="standard"
               placeholder="https://github.com/owner_name/repo_name/pull/pr_number"
               onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-                console.log(event.target.value);
+                console.log("url:", event.target.value);
                 onChangeUrl(event.target.value);
+              }}
+            />
+          </Grid>
+          <Grid item xs={12} sm={6}>
+            <TextField
+              required
+              label="GitHub Token"
+              fullWidth
+              type="password"
+              autoComplete="github-cherry-pick-tool-github-token"
+              variant="standard"
+              placeholder="https://github.com/owner_name/repo_name/pull/pr_number"
+              onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+                setGithubToken(event.target.value)
               }}
             />
           </Grid>

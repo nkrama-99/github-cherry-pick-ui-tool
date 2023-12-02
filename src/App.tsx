@@ -10,8 +10,8 @@ function App() {
   return (
     <React.Fragment>
       <CssBaseline />
-      <NavBar setGithubToken={setGithubToken} />
-      <MainBody githubToken={githubToken} />
+      <NavBar />
+      <MainBody />
       <Footer />
     </React.Fragment>
   );
