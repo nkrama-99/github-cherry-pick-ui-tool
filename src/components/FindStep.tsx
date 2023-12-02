@@ -31,10 +31,19 @@ const FindStep: FC<FindStepProps> = ({
   const [url, setUrl] = useState("");
 
   const onClickFind = () => {
+    if (owner && repo && pr > 0) {
+      console.log("Valid url!");
+      nextStage(1);
+    } else {
+      console.log("Invalid url!");
+    }
+  };
+
+  const onChangeUrl = (url: string) => {
     const regex = /^https:\/\/github\.com\/([^\/]+)\/([^\/]+)\/pull\/(\d+)$/;
     const match = url.match(regex);
-
     if (match) {
+      console.log("Match!");
       const [, ownerName, repoName, prNumber] = match;
       setOwner(ownerName);
       setRepo(repoName);
@@ -42,15 +51,10 @@ const FindStep: FC<FindStepProps> = ({
       if (num) {
         setPR(num);
       }
-
-      if (owner && repo && pr > 0) {
-        console.log("Valid url!")
-        nextStage(1);
-      }
+    } else {
+      console.log("Unexpected entry");
     }
   };
-
-  const onChangeUrl = (url: string) => {};
 
   return (
     <Container>
@@ -71,12 +75,13 @@ const FindStep: FC<FindStepProps> = ({
               variant="standard"
               placeholder="https://github.com/owner_name/repo_name/pull/pr_number"
               onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-                setUrl(event.target.value);
+                console.log(event.target.value);
+                onChangeUrl(event.target.value);
               }}
             />
           </Grid>
           <Grid item xs={12} sm={12}>
-            <Button fullWidth variant="contained" onClick={onClickFind}>
+            <Button fullWidth variant="contained" onClick={() => onClickFind()}>
               Find
             </Button>
           </Grid>
