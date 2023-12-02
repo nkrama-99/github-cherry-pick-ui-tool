@@ -4,6 +4,7 @@ import { FC } from "react";
 const CompleteStep: FC = () => {
   const onClickImage = () => {
     console.log("test");
+    window.location.reload();
   };
   return (
     <Container>
