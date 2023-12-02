@@ -29,6 +29,7 @@ interface ReviewStepProps {
   owner: string;
   repo: string;
   pr: number;
+  setNewPrUrl: React.Dispatch<React.SetStateAction<string>>;
 }
 
 const CommitListItem = (item: Commit, index: number) => {
@@ -51,6 +52,7 @@ const ReviewStep: FC<ReviewStepProps> = ({
   owner,
   repo,
   pr,
+  setNewPrUrl,
 }) => {
   const [commits, setCommits] = useState<Commit[]>([]);
   const [prTitle, setPrTitle] = useState("");
@@ -67,7 +69,7 @@ const ReviewStep: FC<ReviewStepProps> = ({
   }, []);
 
   const onClickCherryPick = async () => {
-    await createCherryPickPR(
+    const res = await createCherryPickPR(
       githubToken,
       owner,
       repo,
@@ -75,6 +77,7 @@ const ReviewStep: FC<ReviewStepProps> = ({
       targetBranch,
       commits
     );
+    setNewPrUrl(res);
     nextStage(2);
   };
 
@@ -91,7 +94,11 @@ const ReviewStep: FC<ReviewStepProps> = ({
             </Typography>
             <Grid container spacing={3}>
               <Grid item xs={12} sm={6}>
-                <Link href={buildPrUrl(owner, repo, pr)} target="_blank" rel="noopener noreferrer">
+                <Link
+                  href={buildPrUrl(owner, repo, pr)}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
                   <Typography variant="h6">PR: {prTitle}</Typography>
                 </Link>
                 <List>

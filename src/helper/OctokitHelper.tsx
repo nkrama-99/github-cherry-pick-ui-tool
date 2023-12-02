@@ -53,7 +53,7 @@ export async function createCherryPickPR(
   pr: number,
   targetBranch: string,
   commits: Commit[]
-): Promise<void> {
+): Promise<string> {
   try {
     const octokit = instantiateOctokit(token);
 
@@ -108,7 +108,7 @@ export async function createCherryPickPR(
 
     // -- create PR
     console.log("STEP 5");
-    await createPrToTargetBranch(
+    const urlToPr = await createPrToTargetBranch(
       octokit,
       owner,
       repo,
@@ -119,10 +119,10 @@ export async function createCherryPickPR(
     );
 
     console.log(">>>>>>>>>>>>> COMPLETE");
-    return;
+    return urlToPr;
   } catch (error) {
     console.error("Error fetching commits:", error);
-    return;
+    return "";
   }
 }
 
@@ -134,8 +134,8 @@ async function createPrToTargetBranch(
   targetBranch: string,
   pr: number,
   newBranchName: string
-) {
-  await octokit.request("POST /repos/{owner}/{repo}/pulls", {
+): Promise<string> {
+  const res = await octokit.request("POST /repos/{owner}/{repo}/pulls", {
     owner: owner,
     repo: repo,
     title: prTitle + " (merge to " + targetBranch + ")",
@@ -146,6 +146,7 @@ async function createPrToTargetBranch(
       "X-GitHub-Api-Version": "2022-11-28",
     },
   });
+  return res.data.html_url;
 }
 
 async function cherryPickCommit(

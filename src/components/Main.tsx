@@ -10,6 +10,7 @@ const MainBody: FC = () => {
   const [repo, setRepo] = useState("");
   const [pr, setPR] = useState(-1);
   const [githubToken, setGithubToken] = useState("");
+  const [newPrUrl, setNewPrUrl] = useState("");
 
   const nextStage = (stageId: number) => {
     setStage(stageId);
@@ -45,9 +46,10 @@ const MainBody: FC = () => {
             owner={owner}
             repo={repo}
             pr={pr}
+            setNewPrUrl={setNewPrUrl}
           />
         )}
-        {stage >= 2 && <CompleteStep />}
+        {stage >= 2 && <CompleteStep newPrUrl={newPrUrl}/>}
       </Container>
     </Container>
   );
