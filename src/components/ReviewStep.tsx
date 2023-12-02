@@ -10,6 +10,7 @@ import {
   ListItemText,
   ListItemIcon,
   Link,
+  Box,
 } from "@mui/material";
 import { FC, useEffect, useState } from "react";
 import {
@@ -144,7 +145,13 @@ const ReviewStep: FC<ReviewStepProps> = ({
   function renderLoading() {
     return (
       <>
-        <Container>LOADING!</Container>
+        <Box
+          sx={{ display: "flex", justifyContent: "center" }}
+        >
+          <img
+            src={process.env.PUBLIC_URL + "/drizzy-loading.gif"}
+          ></img>
+        </Box>
       </>
     );
   }
