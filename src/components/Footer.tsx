@@ -3,7 +3,7 @@ import { FC } from "react";
 
 const Footer: FC = () => {
   return (
-    <Typography variant="body2" color="text.secondary" align="center">
+    <Typography variant="body2" color="text.secondary" align="center" paddingBottom={"20px"}>
       {"Copyright © "}
       <Link
         color="inherit"

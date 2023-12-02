@@ -17,13 +17,13 @@ const MainBody: FC = () => {
 
   return (
     <Container component="main">
-      <Button
+      {/* <Button
         onClick={() => {
           nextStage(stage + 1);
         }}
       >
-        Test
-      </Button>
+        Test stages
+      </Button> */}
       <Container>
         {stage >= 0 && (
           <FindStep
