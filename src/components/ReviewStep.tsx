@@ -56,6 +56,7 @@ const ReviewStep: FC<ReviewStepProps> = ({
 }) => {
   const [commits, setCommits] = useState<Commit[]>([]);
   const [prTitle, setPrTitle] = useState("");
+  const [loading, setLoading] = useState(true);
   const [targetBranch, setTargetBranch] = useState("");
 
   useEffect(() => {
@@ -63,8 +64,7 @@ const ReviewStep: FC<ReviewStepProps> = ({
       setCommits(await getCommitsInPR(githubToken, owner, repo, pr));
       setPrTitle((await getPrInfo(owner, repo, pr, githubToken)).prTitle);
     };
-    retrieveData();
-
+    retrieveData().then(() => setLoading(false));
     return () => {};
   }, []);
 
@@ -81,73 +81,82 @@ const ReviewStep: FC<ReviewStepProps> = ({
     nextStage(2);
   };
 
-  return (
-    <Container>
-      {commits.length > 0 ? (
-        <>
-          <Paper
-            variant="outlined"
-            sx={{ my: { xs: 3, md: 6 }, p: { xs: 2, md: 3 } }}
-          >
-            <Typography component="h1" variant="h4" align="center" gutterBottom>
-              Step 2: Review Commits
-            </Typography>
+  function renderFailure() {
+    return (
+      <>
+        <Typography component="h1" variant="h6" align="center" gutterBottom>
+          Oops this is embarassing, your PR does not exist. You need to get back
+          to work.
+        </Typography>
+      </>
+    );
+  }
+
+  function renderSuccess() {
+    return (
+      <>
+        <Typography component="h1" variant="h4" align="center" gutterBottom>
+          Step 2: Review Commits
+        </Typography>
+        <Grid container spacing={3}>
+          <Grid item xs={12} sm={6}>
+            <Link
+              href={buildPrUrl(owner, repo, pr)}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <Typography variant="h6">PR: {prTitle}</Typography>
+            </Link>
+            <List>
+              {commits.map((item, index) => CommitListItem(item, index))}
+            </List>
+          </Grid>
+          <Grid item xs={12} sm={6}>
             <Grid container spacing={3}>
-              <Grid item xs={12} sm={6}>
-                <Link
-                  href={buildPrUrl(owner, repo, pr)}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  <Typography variant="h6">PR: {prTitle}</Typography>
-                </Link>
-                <List>
-                  {commits.map((item, index) => CommitListItem(item, index))}
-                </List>
+              <Grid item xs={12} sm={12}>
+                <TextField
+                  required
+                  label="Target Branch"
+                  fullWidth
+                  autoComplete="github-cherry-pick-target-branch"
+                  variant="standard"
+                  onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+                    setTargetBranch(event.target.value);
+                  }}
+                />
               </Grid>
-              <Grid item xs={12} sm={6}>
-                <Grid container spacing={3}>
-                  <Grid item xs={12} sm={12}>
-                    <TextField
-                      required
-                      label="Target Branch"
-                      fullWidth
-                      autoComplete="github-cherry-pick-target-branch"
-                      variant="standard"
-                      onChange={(
-                        event: React.ChangeEvent<HTMLInputElement>
-                      ) => {
-                        setTargetBranch(event.target.value);
-                      }}
-                    />
-                  </Grid>
-                  <Grid item xs={12} sm={12}>
-                    <Button
-                      fullWidth
-                      variant="contained"
-                      onClick={onClickCherryPick}
-                    >
-                      Cherry pick
-                    </Button>
-                  </Grid>
-                </Grid>
+              <Grid item xs={12} sm={12}>
+                <Button
+                  fullWidth
+                  variant="contained"
+                  onClick={onClickCherryPick}
+                >
+                  Cherry pick
+                </Button>
               </Grid>
             </Grid>
-          </Paper>
-        </>
-      ) : (
-        <>
-          <Paper
-            variant="outlined"
-            sx={{ my: { xs: 3, md: 6 }, p: { xs: 2, md: 3 } }}
-          >
-            <Typography component="h1" variant="h6" align="center" gutterBottom>
-              Oops this is embarassing, your PR does not exist. You need to get
-              back to work.
-            </Typography>
-          </Paper>
-        </>
-      )}
+          </Grid>
+        </Grid>
+      </>
+    );
+  }
+
+  function renderLoading() {
+    return (
+      <>
+        <Container>LOADING!</Container>
+      </>
+    );
+  }
+
+  return (
+    <Container>
+      <Paper
+        variant="outlined"
+        sx={{ my: { xs: 3, md: 6 }, p: { xs: 2, md: 3 } }}
+      >
+        {commits.length > 0 ? renderSuccess() : renderFailure()}
+      </Paper>
     </Container>
   );
 };
