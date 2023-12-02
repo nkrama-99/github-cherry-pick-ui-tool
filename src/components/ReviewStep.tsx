@@ -19,7 +19,7 @@ const MAX_COMMIT_ID_LEN = 6;
 
 interface ReviewStepProps {
   githubToken: string;
-  nextStage: () => void;
+  nextStage: (stageId: number) => void;
   owner: string;
   repo: string;
   pr: number;
@@ -72,7 +72,7 @@ const ReviewStep: FC<ReviewStepProps> = ({
         sx={{ my: { xs: 3, md: 6 }, p: { xs: 2, md: 3 } }}
       >
         <Typography component="h1" variant="h4" align="center" gutterBottom>
-          Review Commits
+          Step 2: Review Commits
         </Typography>
         <Grid container spacing={3}>
           <Grid item xs={12} sm={6}>

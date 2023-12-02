@@ -14,19 +14,15 @@ const MainBody: FC<MainProps> = ({ githubToken }) => {
   const [repo, setRepo] = useState("");
   const [pr, setPR] = useState(-1);
 
-  const nextStage = () => {
-    if (stage == 2) {
-      setStage(0);
-    } else {
-      setStage(stage + 1);
-    }
+  const nextStage = (stageId: number) => {
+    setStage(stageId);
   };
 
   return (
     <Container component="main">
       <Button
         onClick={() => {
-          nextStage();
+          nextStage(stage + 1);
         }}
       >
         Test

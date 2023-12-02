@@ -5,11 +5,12 @@ import {
   Grid,
   TextField,
   Button,
+  Divider,
 } from "@mui/material";
-import { FC } from "react";
+import { FC, useState } from "react";
 
 interface FindStepProps {
-  nextStage: () => void;
+  nextStage: (stageId: number) => void;
   owner: String;
   setOwner: React.Dispatch<React.SetStateAction<string>>;
   repo: String;
@@ -27,11 +28,29 @@ const FindStep: FC<FindStepProps> = ({
   pr,
   setPR,
 }) => {
+  const [url, setUrl] = useState("");
+
   const onClickFind = () => {
-    if (owner && repo && pr > 0) {
-      nextStage();
+    const regex = /^https:\/\/github\.com\/([^\/]+)\/([^\/]+)\/pull\/(\d+)$/;
+    const match = url.match(regex);
+
+    if (match) {
+      const [, ownerName, repoName, prNumber] = match;
+      setOwner(ownerName);
+      setRepo(repoName);
+      const num = parseInt(prNumber);
+      if (num) {
+        setPR(num);
+      }
+
+      if (owner && repo && pr > 0) {
+        console.log("Valid url!")
+        nextStage(1);
+      }
     }
   };
+
+  const onChangeUrl = (url: string) => {};
 
   return (
     <Container>
@@ -40,44 +59,19 @@ const FindStep: FC<FindStepProps> = ({
         sx={{ my: { xs: 3, md: 6 }, p: { xs: 2, md: 3 } }}
       >
         <Typography component="h1" variant="h4" align="center" gutterBottom>
-          Find your PR
+          Step 1: Find your PR
         </Typography>
         <Grid container spacing={3}>
-          <Grid item xs={12} sm={4}>
+          <Grid item xs={12} sm={12}>
             <TextField
               required
-              label="Owner"
+              label="URL to PR"
               fullWidth
-              autoComplete="github-cherry-pick-tool-owner"
+              autoComplete="github-cherry-pick-tool-url"
               variant="standard"
+              placeholder="https://github.com/owner_name/repo_name/pull/pr_number"
               onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-                setOwner(event.target.value);
-              }}
-            />
-          </Grid>
-          <Grid item xs={12} sm={4}>
-            <TextField
-              required
-              label="Repository"
-              fullWidth
-              autoComplete="github-cherry-pick-tool-repo"
-              variant="standard"
-              onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-                setRepo(event.target.value);
-              }}
-            />
-          </Grid>
-          <Grid item xs={12} sm={4}>
-            <TextField
-              required
-              label="PR #"
-              fullWidth
-              variant="standard"
-              onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-                const num = parseInt(event.target.value);
-                if (num) {
-                  setPR(num);
-                }
+                setUrl(event.target.value);
               }}
             />
           </Grid>
