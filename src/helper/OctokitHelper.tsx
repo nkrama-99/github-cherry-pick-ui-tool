@@ -61,7 +61,13 @@ export async function createCherryPickPR(
 
     // -- retrieve original PR info
     console.log("STEP 1");
-    const { prTitle, sourceBranch } = await getPrInfo(octokit, owner, repo, pr);
+    const { prTitle, sourceBranch } = await getPrInfo(
+      owner,
+      repo,
+      pr,
+      token,
+      octokit
+    );
 
     // -- retrieve target branch info
     console.log("STEP 2");
@@ -231,12 +237,16 @@ async function getTargetBranchInfo(
   return targetBranchBaseCommitSha;
 }
 
-async function getPrInfo(
-  octokit: Octokit,
+export async function getPrInfo(
   owner: string,
   repo: string,
-  pr: number
+  pr: number,
+  token: string,
+  octokit?: Octokit
 ) {
+  if (!octokit) {
+    octokit = instantiateOctokit(token);
+  }
   const originalPrInfo = await octokit.request(
     "GET /repos/{owner}/{repo}/pulls/{pull_number}",
     {
@@ -253,4 +263,8 @@ async function getPrInfo(
   const sourceBranch = originalPrInfo.data.head.ref;
 
   return { prTitle, sourceBranch };
+}
+
+export function buildPrUrl(owner: string, repo: string, pr: number): string {
+  return `https://github.com/${owner}/${repo}/pull/${pr}`;
 }

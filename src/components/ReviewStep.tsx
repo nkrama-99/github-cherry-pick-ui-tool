@@ -9,12 +9,15 @@ import {
   ListItem,
   ListItemText,
   ListItemIcon,
+  Link,
 } from "@mui/material";
 import { FC, useEffect, useState } from "react";
 import {
   getCommitsInPR,
   Commit,
   createCherryPickPR,
+  getPrInfo,
+  buildPrUrl,
 } from "../helper/OctokitHelper";
 import CommitIcon from "@mui/icons-material/Commit";
 
@@ -50,11 +53,13 @@ const ReviewStep: FC<ReviewStepProps> = ({
   pr,
 }) => {
   const [commits, setCommits] = useState<Commit[]>([]);
+  const [prTitle, setPrTitle] = useState("");
   const [targetBranch, setTargetBranch] = useState("");
 
   useEffect(() => {
     const retrieveData = async () => {
       setCommits(await getCommitsInPR(githubToken, owner, repo, pr));
+      setPrTitle((await getPrInfo(owner, repo, pr, githubToken)).prTitle);
     };
     retrieveData();
 
@@ -86,6 +91,9 @@ const ReviewStep: FC<ReviewStepProps> = ({
             </Typography>
             <Grid container spacing={3}>
               <Grid item xs={12} sm={6}>
+                <Link href={buildPrUrl(owner, repo, pr)} target="_blank" rel="noopener noreferrer">
+                  <Typography variant="h6">PR: {prTitle}</Typography>
+                </Link>
                 <List>
                   {commits.map((item, index) => CommitListItem(item, index))}
                 </List>
