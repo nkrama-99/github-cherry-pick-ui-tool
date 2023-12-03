@@ -89,7 +89,6 @@ const FindStep: FC<FindStepProps> = ({
               type="password"
               autoComplete="github-cherry-pick-tool-github-token"
               variant="standard"
-              placeholder="https://github.com/owner_name/repo_name/pull/pr_number"
               onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
                 setGithubToken(event.target.value);
               }}
