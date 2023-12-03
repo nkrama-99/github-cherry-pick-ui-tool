@@ -32,6 +32,17 @@ const CompleteStep: FC<CompleteStepProps> = ({
     console.log("test");
     window.location.reload();
   };
+
+  function renderLoading() {
+    return (
+      <>
+        <Box sx={{ display: "flex", justifyContent: "center" }}>
+          <img src={process.env.PUBLIC_URL + "/drizzy-loading.gif"}></img>
+        </Box>
+      </>
+    );
+  }
+
   return (
     <Container>
       <Paper

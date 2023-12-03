@@ -59,7 +59,7 @@ const ReviewStep: FC<ReviewStepProps> = ({
   commits,
   setCommits,
   targetBranch,
-  setTargetBranch
+  setTargetBranch,
 }) => {
   const [prTitle, setPrTitle] = useState("");
   const [loading, setLoading] = useState(true);
@@ -148,13 +148,9 @@ const ReviewStep: FC<ReviewStepProps> = ({
   function renderLoading() {
     return (
       <>
-        <Box
-          sx={{ display: "flex", justifyContent: "center" }}
-        >
-          <img
-            src={process.env.PUBLIC_URL + "/drizzy-loading.gif"}
-          ></img>
-        </Box>
+        <Typography component="h1" variant="h6" align="center" gutterBottom>
+          Fetching...
+        </Typography>
       </>
     );
   }
@@ -165,7 +161,11 @@ const ReviewStep: FC<ReviewStepProps> = ({
         variant="outlined"
         sx={{ my: { xs: 3, md: 6 }, p: { xs: 2, md: 3 } }}
       >
-        {commits.length > 0 ? renderSuccess() : renderFailure()}
+        {loading
+          ? renderLoading()
+          : commits.length > 0
+          ? renderSuccess()
+          : renderFailure()}
       </Paper>
     </Container>
   );
