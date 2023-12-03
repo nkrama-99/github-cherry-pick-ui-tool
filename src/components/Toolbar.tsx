@@ -36,17 +36,21 @@ const NavBar: FC = () => {
           Github Cherry-Pick Tool
         </Typography>
         <Tooltip title="Link to repo" arrow>
-          <Link
+          <IconButton
             color={"inherit"}
-            target="_blank"
-            rel="noopener noreferrer"
-            href="https://github.com/nkrama-99/github-cherry-pick-ui-tool"
+            onClick={() => {
+              window.open(
+                "https://github.com/nkrama-99/github-cherry-pick-ui-tool",
+                "_blank"
+              );
+            }}
           >
             <GitHubIcon fontSize="large" />
-          </Link>
+          </IconButton>
         </Tooltip>
         <Tooltip title="Restart cherry-picking process">
           <IconButton
+            color={"inherit"}
             onClick={() => {
               window.location.reload();
             }}
