@@ -5,8 +5,11 @@ import {
   Grid,
   TextField,
   Button,
+  IconButton,
+  Tooltip,
 } from "@mui/material";
 import { FC } from "react";
+import InfoIcon from "@mui/icons-material/Info";
 
 interface FindStepProps {
   nextStage: (stageId: number) => void;
@@ -81,10 +84,10 @@ const FindStep: FC<FindStepProps> = ({
               }}
             />
           </Grid>
-          <Grid item xs={12} sm={6}>
+          <Grid item xs={12} sm={5}>
             <TextField
               required
-              label="GitHub Token"
+              label="GitHub Personal Access Token (PAT)"
               fullWidth
               type="password"
               autoComplete="github-cherry-pick-tool-github-token"
@@ -93,6 +96,20 @@ const FindStep: FC<FindStepProps> = ({
                 setGithubToken(event.target.value);
               }}
             />
+          </Grid>
+          <Grid item xs={12} sm={1}>
+            <Tooltip title="For more info on Github PAT" arrow>
+              <IconButton
+                onClick={() => {
+                  window.open(
+                    "https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens",
+                    "_blank"
+                  );
+                }}
+              >
+                <InfoIcon fontSize="large" />
+              </IconButton>
+            </Tooltip>
           </Grid>
           <Grid item xs={12} sm={12}>
             <Button fullWidth variant="contained" onClick={() => onClickFind()}>
