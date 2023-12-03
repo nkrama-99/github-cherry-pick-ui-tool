@@ -78,17 +78,9 @@ const ReviewStep: FC<ReviewStepProps> = ({
         setLoading(false);
       });
     return () => {};
-  }, []);
+  }, [githubToken, owner, repo, pr]);
 
   const onClickCherryPick = async () => {
-    const res = await createCherryPickPR(
-      githubToken,
-      owner,
-      repo,
-      pr,
-      targetBranch,
-      commits
-    );
     nextStage(2);
   };
 
@@ -99,7 +91,7 @@ const ReviewStep: FC<ReviewStepProps> = ({
           Opps something went wrong
         </Typography>
         <Typography component="h1" variant="h6" align="center" gutterBottom>
-          verify your URL and GitHub token
+          Verify your URL and GitHub token.
         </Typography>
       </>
     );
