@@ -69,7 +69,14 @@ const ReviewStep: FC<ReviewStepProps> = ({
       setCommits(await getCommitsInPR(githubToken, owner, repo, pr));
       setPrTitle((await getPrInfo(owner, repo, pr, githubToken)).prTitle);
     };
-    retrieveData().then(() => setLoading(false));
+    retrieveData()
+      .then(() => {
+        setLoading(false);
+      })
+      .catch((err) => {
+        console.log("error on retrieveData:", err);
+        setLoading(false);
+      });
     return () => {};
   }, []);
 
@@ -88,9 +95,11 @@ const ReviewStep: FC<ReviewStepProps> = ({
   function renderFailure() {
     return (
       <>
+        <Typography component="h1" variant="h4" align="center" gutterBottom>
+          Opps something went wrong
+        </Typography>
         <Typography component="h1" variant="h6" align="center" gutterBottom>
-          Oops this is embarassing, your PR does not exist. You need to get back
-          to work.
+          verify your URL and GitHub token
         </Typography>
       </>
     );

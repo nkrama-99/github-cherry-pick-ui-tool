@@ -19,31 +19,26 @@ export async function getCommitsInPR(
   repo: string,
   prNumber: number
 ): Promise<Commit[]> {
-  try {
-    const octokit = instantiateOctokit(token);
+  const octokit = instantiateOctokit(token);
 
-    const response = await octokit.request(
-      "GET /repos/{owner}/{repo}/pulls/{pull_number}/commits",
-      {
-        owner: owner,
-        repo: repo,
-        pull_number: prNumber,
-        headers: {
-          "X-GitHub-Api-Version": "2022-11-28",
-        },
-      }
-    );
+  const response = await octokit.request(
+    "GET /repos/{owner}/{repo}/pulls/{pull_number}/commits",
+    {
+      owner: owner,
+      repo: repo,
+      pull_number: prNumber,
+      headers: {
+        "X-GitHub-Api-Version": "2022-11-28",
+      },
+    }
+  );
 
-    return response.data.map((commitInfo) => {
-      return {
-        Id: commitInfo.sha,
-        Message: commitInfo.commit.message,
-      };
-    });
-  } catch (error) {
-    console.error("Error fetching commits:", error);
-    return [];
-  }
+  return response.data.map((commitInfo) => {
+    return {
+      Id: commitInfo.sha,
+      Message: commitInfo.commit.message,
+    };
+  });
 }
 
 export async function createCherryPickPR(
