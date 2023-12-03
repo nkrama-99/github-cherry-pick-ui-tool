@@ -30,7 +30,10 @@ interface ReviewStepProps {
   owner: string;
   repo: string;
   pr: number;
-  setNewPrUrl: React.Dispatch<React.SetStateAction<string>>;
+  commits: Commit[];
+  setCommits: React.Dispatch<React.SetStateAction<Commit[]>>;
+  targetBranch: string;
+  setTargetBranch: React.Dispatch<React.SetStateAction<string>>;
 }
 
 const CommitListItem = (item: Commit, index: number) => {
@@ -53,12 +56,13 @@ const ReviewStep: FC<ReviewStepProps> = ({
   owner,
   repo,
   pr,
-  setNewPrUrl,
+  commits,
+  setCommits,
+  targetBranch,
+  setTargetBranch
 }) => {
-  const [commits, setCommits] = useState<Commit[]>([]);
   const [prTitle, setPrTitle] = useState("");
   const [loading, setLoading] = useState(true);
-  const [targetBranch, setTargetBranch] = useState("");
 
   useEffect(() => {
     const retrieveData = async () => {
@@ -78,7 +82,6 @@ const ReviewStep: FC<ReviewStepProps> = ({
       targetBranch,
       commits
     );
-    setNewPrUrl(res);
     nextStage(2);
   };
 

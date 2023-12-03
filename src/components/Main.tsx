@@ -3,6 +3,7 @@ import { FC, useState } from "react";
 import FindStep from "./FindStep";
 import ReviewStep from "./ReviewStep";
 import CompleteStep from "./CompleteStep";
+import { Commit } from "../helper/OctokitHelper";
 
 const MainBody: FC = () => {
   const [stage, setStage] = useState(0);
@@ -10,7 +11,8 @@ const MainBody: FC = () => {
   const [repo, setRepo] = useState("");
   const [pr, setPR] = useState(-1);
   const [githubToken, setGithubToken] = useState("");
-  const [newPrUrl, setNewPrUrl] = useState("");
+  const [targetBranch, setTargetBranch] = useState("");
+  const [commits, setCommits] = useState<Commit[]>([]);
 
   const nextStage = (stageId: number) => {
     setStage(stageId);
@@ -46,10 +48,22 @@ const MainBody: FC = () => {
             owner={owner}
             repo={repo}
             pr={pr}
-            setNewPrUrl={setNewPrUrl}
+            commits={commits}
+            setCommits={setCommits}
+            targetBranch={targetBranch}
+            setTargetBranch={setTargetBranch}
           />
         )}
-        {stage >= 2 && <CompleteStep newPrUrl={newPrUrl}/>}
+        {stage >= 2 && (
+          <CompleteStep
+            githubToken={githubToken}
+            owner={owner}
+            repo={repo}
+            pr={pr}
+            commits={commits}
+            targetBranch={targetBranch}
+          />
+        )}
       </Container>
     </Container>
   );

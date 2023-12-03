@@ -1,11 +1,33 @@
 import { Typography, Container, Paper, Box, Link } from "@mui/material";
-import { FC } from "react";
+import { FC, useEffect, useState } from "react";
+import { Commit } from "../helper/OctokitHelper";
 
 interface CompleteStepProps {
-  newPrUrl: string;
+  githubToken: string;
+  owner: string;
+  repo: string;
+  pr: number;
+  targetBranch: string;
+  commits: Commit[];
 }
 
-const CompleteStep: FC<CompleteStepProps> = ({ newPrUrl }) => {
+const CompleteStep: FC<CompleteStepProps> = ({
+  githubToken,
+  owner,
+  repo,
+  pr,
+  targetBranch,
+  commits,
+}) => {
+  const [loading, setLoading] = useState(true);
+  const [newPrUrl, setNewPrUrl] = useState("");
+
+  useEffect(() => {
+    const retrieveData = async () => {};
+    retrieveData().then(() => setLoading(false));
+    return () => {};
+  }, []);
+
   const onClickImage = () => {
     console.log("test");
     window.location.reload();
