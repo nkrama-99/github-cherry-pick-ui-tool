@@ -10,6 +10,7 @@ import {
   ListItemText,
   ListItemIcon,
   Link,
+  Autocomplete,
 } from "@mui/material";
 import { FC, useEffect, useState } from "react";
 import {
@@ -17,6 +18,7 @@ import {
   Commit,
   getPrInfo,
   buildPrUrl,
+  getBranchesInRepo,
 } from "../helper/OctokitHelper";
 import CommitIcon from "@mui/icons-material/Commit";
 
@@ -61,9 +63,11 @@ const ReviewStep: FC<ReviewStepProps> = ({
 }) => {
   const [prTitle, setPrTitle] = useState("");
   const [loading, setLoading] = useState(true);
+  const [branches, setBranches] = useState<string[]>([]);
 
   useEffect(() => {
     const retrieveData = async () => {
+      setBranches(await getBranchesInRepo(githubToken, owner, repo));
       setCommits(await getCommitsInPR(githubToken, owner, repo, pr));
       setPrTitle((await getPrInfo(owner, repo, pr, githubToken)).prTitle);
     };
@@ -81,7 +85,11 @@ const ReviewStep: FC<ReviewStepProps> = ({
   }, [githubToken, owner, repo, pr]);
 
   const onClickCherryPick = async () => {
-    nextStage(2);
+    if (targetBranch) {
+      nextStage(2);
+    } else {
+      console.log("Invalid inputs!");
+    }
   };
 
   function renderFailure() {
@@ -119,14 +127,23 @@ const ReviewStep: FC<ReviewStepProps> = ({
           <Grid item xs={12} sm={6}>
             <Grid container spacing={3}>
               <Grid item xs={12} sm={12}>
-                <TextField
-                  required
-                  label="Target Branch"
-                  fullWidth
-                  autoComplete="github-cherry-pick-target-branch"
-                  variant="standard"
-                  onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-                    setTargetBranch(event.target.value);
+                <Autocomplete
+                  options={branches} // You can replace this with your list of options
+                  getOptionLabel={(option) => option} // Provide a function to extract the label from each option
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      label="Target Branch"
+                      fullWidth
+                      variant="standard"
+                    />
+                  )}
+                  onChange={(event: any, newValue: string | null) => {
+                    if (newValue) {
+                      setTargetBranch(newValue);
+                    } else {
+                      setTargetBranch("");
+                    }
                   }}
                 />
               </Grid>

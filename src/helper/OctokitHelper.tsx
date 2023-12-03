@@ -41,6 +41,26 @@ export async function getCommitsInPR(
   });
 }
 
+export async function getBranchesInRepo(
+  token: string,
+  owner: string,
+  repo: string
+): Promise<string[]> {
+  const octokit = instantiateOctokit(token);
+
+  const response = await octokit.request("GET /repos/{owner}/{repo}/branches", {
+    owner: owner,
+    repo: repo,
+    headers: {
+      "X-GitHub-Api-Version": "2022-11-28",
+    },
+  });
+
+  return response.data.map((branch) => {
+    return branch.name;
+  });
+}
+
 export async function createCherryPickPR(
   token: string,
   owner: string,
