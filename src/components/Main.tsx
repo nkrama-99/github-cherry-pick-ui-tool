@@ -70,8 +70,8 @@ const MainBody: FC = () => {
     <Container component="main">
       <Container sx={{ my: { xs: 3, md: 6 }, p: { xs: 2, md: 3 } }}>
         <Stepper activeStep={stage} alternativeLabel>
-          {steps.map((label) => (
-            <Step key={label}>
+          {steps.map((label, index) => (
+            <Step key={label} active={index <= stage} completed={false}>
               <StepLabel>{label}</StepLabel>
             </Step>
           ))}
