@@ -64,6 +64,7 @@ const ReviewStep: FC<ReviewStepProps> = ({
   const [prTitle, setPrTitle] = useState("");
   const [loading, setLoading] = useState(true);
   const [branches, setBranches] = useState<string[]>([]);
+  const [error, setError] = useState("");
 
   useEffect(() => {
     const retrieveData = async () => {
@@ -78,6 +79,7 @@ const ReviewStep: FC<ReviewStepProps> = ({
       })
       .catch((err) => {
         console.log("error on retrieveData:", err);
+        setError(err.message);
         setLoading(false);
       });
 
@@ -97,6 +99,15 @@ const ReviewStep: FC<ReviewStepProps> = ({
       <>
         <Typography component="h1" variant="h4" align="center" gutterBottom>
           Opps something went wrong
+        </Typography>
+        <Typography
+          component="h1"
+          variant="h6"
+          align="center"
+          color={"red"}
+          gutterBottom
+        >
+          Error: {error}... Check console logs for more info.
         </Typography>
         <Typography component="h1" variant="h6" align="center" gutterBottom>
           Verify your URL and GitHub token.

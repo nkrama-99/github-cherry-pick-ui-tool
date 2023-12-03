@@ -21,6 +21,7 @@ const CompleteStep: FC<CompleteStepProps> = ({
 }) => {
   const [loading, setLoading] = useState(true);
   const [newPrUrl, setNewPrUrl] = useState("");
+  const [error, setError] = useState("");
 
   useEffect(() => {
     const cherryPick = async () => {
@@ -42,6 +43,7 @@ const CompleteStep: FC<CompleteStepProps> = ({
       })
       .catch((err) => {
         console.log("error on cherryPick:", err);
+        setError(err.message);
         setLoading(false);
       });
 
@@ -74,10 +76,18 @@ const CompleteStep: FC<CompleteStepProps> = ({
         <Typography component="h1" variant="h4" align="center" gutterBottom>
           Opps something went wrong
         </Typography>
+        <Typography
+          component="h1"
+          variant="h6"
+          align="center"
+          color={"red"}
+          gutterBottom
+        >
+          Error: {error}... Check console logs for more info.
+        </Typography>
         <Typography component="h1" variant="h6" align="center" gutterBottom>
-          Sorry try again. If it fails again, maybe there were some conflicts in
-          the cherry-picking process. Check console logs for more information.
-          You may need to manually do it this time :|
+          Retry. If it fails again, maybe there were some conflicts in the
+          cherry-picking process. You may need to manually do it this time :|
         </Typography>
       </>
     );
