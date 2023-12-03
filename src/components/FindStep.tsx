@@ -32,7 +32,6 @@ const FindStep: FC<FindStepProps> = ({
   setGithubToken,
 }) => {
   const onClickFind = () => {
-    console.log(githubToken, owner, repo, pr);
     if (githubToken && owner && repo && pr > 0) {
       console.log("Valid inputs!");
       nextStage(1);

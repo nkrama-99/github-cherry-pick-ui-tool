@@ -69,6 +69,7 @@ const ReviewStep: FC<ReviewStepProps> = ({
       setCommits(await getCommitsInPR(githubToken, owner, repo, pr));
       setPrTitle((await getPrInfo(owner, repo, pr, githubToken)).prTitle);
     };
+
     retrieveData()
       .then(() => {
         setLoading(false);
@@ -77,6 +78,7 @@ const ReviewStep: FC<ReviewStepProps> = ({
         console.log("error on retrieveData:", err);
         setLoading(false);
       });
+
     return () => {};
   }, [githubToken, owner, repo, pr]);
 

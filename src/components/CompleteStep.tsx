@@ -35,6 +35,7 @@ const CompleteStep: FC<CompleteStepProps> = ({
         )
       );
     };
+
     cherryPick()
       .then(() => {
         setLoading(false);
@@ -43,6 +44,7 @@ const CompleteStep: FC<CompleteStepProps> = ({
         console.log("error on cherryPick:", err);
         setLoading(false);
       });
+
     return () => {};
   }, [githubToken, owner, repo, pr, targetBranch, commits]);
 
