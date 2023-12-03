@@ -1,6 +1,7 @@
 import { AppBar, Link, Toolbar, Tooltip, Typography } from "@mui/material";
 import { FC } from "react";
 import GitHubIcon from "@mui/icons-material/GitHub";
+import CherryIcon from "./CherryIcon";
 
 const NavBar: FC = () => {
   return (
@@ -14,7 +15,9 @@ const NavBar: FC = () => {
       }}
     >
       <Toolbar>
+        <CherryIcon />
         <Typography
+          paddingLeft={"10px"}
           variant="subtitle1"
           color="inherit"
           noWrap
