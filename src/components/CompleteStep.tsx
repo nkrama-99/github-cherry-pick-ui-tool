@@ -49,7 +49,6 @@ const CompleteStep: FC<CompleteStepProps> = ({
   }, [githubToken, owner, repo, pr, targetBranch, commits]);
 
   const onClickImage = () => {
-    console.log("test");
     window.location.reload();
   };
 

@@ -1,7 +1,16 @@
-import { AppBar, Link, Toolbar, Tooltip, Typography } from "@mui/material";
+import {
+  AppBar,
+  Button,
+  IconButton,
+  Link,
+  Toolbar,
+  Tooltip,
+  Typography,
+} from "@mui/material";
 import { FC } from "react";
 import GitHubIcon from "@mui/icons-material/GitHub";
 import CherryIcon from "./CherryIcon";
+import RestartAltIcon from "@mui/icons-material/RestartAlt";
 
 const NavBar: FC = () => {
   return (
@@ -35,6 +44,15 @@ const NavBar: FC = () => {
           >
             <GitHubIcon fontSize="large" />
           </Link>
+        </Tooltip>
+        <Tooltip title="Restart cherry-picking process">
+          <IconButton
+            onClick={() => {
+              window.location.reload();
+            }}
+          >
+            <RestartAltIcon fontSize="large" />
+          </IconButton>
         </Tooltip>
       </Toolbar>
     </AppBar>
