@@ -68,13 +68,15 @@ const MainBody: FC = () => {
 
   return (
     <Container component="main">
-      <Stepper activeStep={stage} alternativeLabel>
-        {steps.map((label) => (
-          <Step key={label}>
-            <StepLabel>{label}</StepLabel>
-          </Step>
-        ))}
-      </Stepper>
+      <Container sx={{ my: { xs: 3, md: 6 }, p: { xs: 2, md: 3 } }}>
+        <Stepper activeStep={stage} alternativeLabel>
+          {steps.map((label) => (
+            <Step key={label}>
+              <StepLabel>{label}</StepLabel>
+            </Step>
+          ))}
+        </Stepper>
+      </Container>
       <Container>{getStepContent(stage)}</Container>
     </Container>
   );
