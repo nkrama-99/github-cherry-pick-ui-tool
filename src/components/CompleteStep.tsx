@@ -60,7 +60,10 @@ const CompleteStep: FC<CompleteStepProps> = ({
           Picking cherries...
         </Typography>
         <Box sx={{ display: "flex", justifyContent: "center" }}>
-          <img src={process.env.PUBLIC_URL + "/drizzy-loading.gif"}></img>
+          <img
+            alt=""
+            src={process.env.PUBLIC_URL + "/drizzy-loading.gif"}
+          ></img>
         </Box>
       </>
     );
@@ -100,6 +103,7 @@ const CompleteStep: FC<CompleteStepProps> = ({
           padding={"20px"}
         >
           <img
+            alt=""
             style={{
               cursor: "pointer",
             }}

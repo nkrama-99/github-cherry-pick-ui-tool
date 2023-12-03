@@ -5,8 +5,6 @@ import NavBar from "./components/Toolbar";
 import MainBody from "./components/Main";
 
 function App() {
-  const [githubToken, setGithubToken] = React.useState("");
-
   return (
     <React.Fragment>
       <CssBaseline />

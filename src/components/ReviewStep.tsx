@@ -10,13 +10,11 @@ import {
   ListItemText,
   ListItemIcon,
   Link,
-  Box,
 } from "@mui/material";
 import { FC, useEffect, useState } from "react";
 import {
   getCommitsInPR,
   Commit,
-  createCherryPickPR,
   getPrInfo,
   buildPrUrl,
 } from "../helper/OctokitHelper";
