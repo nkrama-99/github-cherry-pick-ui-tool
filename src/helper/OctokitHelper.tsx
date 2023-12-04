@@ -69,25 +69,17 @@ export async function createCherryPickPR(
   repo: string,
   pr: number,
   targetBranch: string,
-  commits: Commit[]
+  commits: Commit[],
+  sourceBranch: string,
+  prTitle: string
 ): Promise<string> {
   try {
     const octokit = instantiateOctokit(token);
 
     console.log(">>>>>>>>>>>>> START");
 
-    // -- retrieve original PR info
-    console.log("STEP 1");
-    const { prTitle, sourceBranch } = await getPrInfo(
-      owner,
-      repo,
-      pr,
-      token,
-      octokit
-    );
-
     // -- retrieve target branch info
-    console.log("STEP 2");
+    console.log("STEP 1: Retrieve target branch info");
     const targetBranchBaseCommitSha = await getTargetBranchInfo(
       octokit,
       owner,
@@ -96,7 +88,7 @@ export async function createCherryPickPR(
     );
 
     // -- Create a new branch off of target branch
-    console.log("STEP 3");
+    console.log("STEP 2: Create new branch from target branch");
     const newBranchName =
       sourceBranch +
       "_" +
@@ -112,7 +104,7 @@ export async function createCherryPickPR(
     );
 
     // -- start picking
-    console.log("STEP 4");
+    console.log("STEP 3: Cherry pick all commits");
     for (var index = 0; index < commits.length; index++) {
       await cherryPickCommit(
         commits[index],
@@ -124,7 +116,7 @@ export async function createCherryPickPR(
     }
 
     // -- create PR
-    console.log("STEP 5");
+    console.log("STEP 4: Create new PR");
     const urlToPr = await createPrToTargetBranch(
       octokit,
       owner,

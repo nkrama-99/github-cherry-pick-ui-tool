@@ -1,6 +1,6 @@
 import { Typography, Container, Paper, Box, Link } from "@mui/material";
 import { FC, useEffect, useState } from "react";
-import { Commit, createCherryPickPR } from "../helper/OctokitHelper";
+import { Commit, createCherryPickPR, getPrInfo } from "../helper/OctokitHelper";
 
 interface CompleteStepProps {
   githubToken: string;
@@ -25,14 +25,17 @@ const CompleteStep: FC<CompleteStepProps> = ({
 
   useEffect(() => {
     const cherryPick = async () => {
+      const prInfo = await getPrInfo(owner, repo, pr, githubToken);
       setNewPrUrl(
         await createCherryPickPR(
           githubToken,
-          owner,
+          prInfo.sourceRepoOwner,
           repo,
           pr,
           targetBranch,
-          commits
+          commits,
+          prInfo.sourceBranch,
+          prInfo.prTitle
         )
       );
     };
