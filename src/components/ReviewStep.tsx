@@ -68,9 +68,10 @@ const ReviewStep: FC<ReviewStepProps> = ({
 
   useEffect(() => {
     const retrieveData = async () => {
-      setBranches(await getBranchesInRepo(githubToken, owner, repo));
+      const prInfo = await getPrInfo(owner, repo, pr, githubToken);
+      setBranches(await getBranchesInRepo(githubToken, prInfo.sourceRepoOwner, repo));
       setCommits(await getCommitsInPR(githubToken, owner, repo, pr));
-      setPrTitle((await getPrInfo(owner, repo, pr, githubToken)).prTitle);
+      setPrTitle(prInfo.prTitle);
     };
 
     retrieveData()
