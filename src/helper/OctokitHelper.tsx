@@ -48,9 +48,11 @@ export async function getBranchesInRepo(
 ): Promise<string[]> {
   const octokit = instantiateOctokit(token);
 
+  // TODO: could have more pages to retrieve from, can get that info from header > links
   const response = await octokit.request("GET /repos/{owner}/{repo}/branches", {
     owner: owner,
     repo: repo,
+    per_page: 100,
     headers: {
       "X-GitHub-Api-Version": "2022-11-28",
     },
@@ -277,8 +279,9 @@ export async function getPrInfo(
 
   const prTitle = originalPrInfo.data.title;
   const sourceBranch = originalPrInfo.data.head.ref;
+  const sourceRepoOwner = originalPrInfo.data.user.login;
 
-  return { prTitle, sourceBranch };
+  return { prTitle, sourceBranch, sourceRepoOwner };
 }
 
 export function buildPrUrl(owner: string, repo: string, pr: number): string {
