@@ -35,7 +35,8 @@ const CompleteStep: FC<CompleteStepProps> = ({
           targetBranch,
           commits,
           prInfo.sourceBranch,
-          prInfo.prTitle
+          prInfo.prTitle,
+          owner
         )
       );
     };

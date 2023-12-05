@@ -65,13 +65,14 @@ export async function getBranchesInRepo(
 
 export async function createCherryPickPR(
   token: string,
-  owner: string,
+  owner: string, // forked repo owner
   repo: string,
   pr: number,
   targetBranch: string,
   commits: Commit[],
   sourceBranch: string,
-  prTitle: string
+  prTitle: string,
+  mainRepoOwner: string // main repo owner
 ): Promise<string> {
   try {
     const octokit = instantiateOctokit(token);
@@ -119,12 +120,12 @@ export async function createCherryPickPR(
     console.log("STEP 4: Create new PR");
     const urlToPr = await createPrToTargetBranch(
       octokit,
-      owner,
+      mainRepoOwner,
       repo,
       prTitle,
       targetBranch,
       pr,
-      newBranchName
+      owner + ":" + newBranchName
     );
 
     console.log(">>>>>>>>>>>>> COMPLETE");
