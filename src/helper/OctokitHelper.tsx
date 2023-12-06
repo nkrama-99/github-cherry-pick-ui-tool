@@ -1,7 +1,6 @@
 import { Octokit } from "octokit";
 
 const BRANCH_NAME_RANDOM_NUMBER_LIMIT = 101;
-const DEBUG = true;
 
 export interface Commit {
   Id: string;
@@ -170,7 +169,7 @@ async function cherryPickCommit(
   newBranchName: string
 ) {
   // -- get branch info
-  if (DEBUG) console.log(commit.Id, "> A");
+  console.log("STEP 3A: ", commit.Id.slice(0, 6));
   const newBranchInfo = await octokit.request(
     "GET /repos/{owner}/{repo}/branches/{branch}",
     {
@@ -183,8 +182,8 @@ async function cherryPickCommit(
     }
   );
 
-  // -- create the commit
-  if (DEBUG) console.log(commit.Id, "> B");
+  // -- create temp commit
+  console.log("STEP 3B: ", commit.Id.slice(0, 6));
   const tempCommit = await octokit.request(
     "POST /repos/{owner}/{repo}/git/commits",
     {
@@ -199,8 +198,8 @@ async function cherryPickCommit(
     }
   );
 
-  // -- temp force branch over to the correct commit
-  if (DEBUG) console.log(commit.Id, "> C");
+  // -- temp force branch over to the commit
+  console.log("STEP 3C: ", commit.Id.slice(0, 6));
   await octokit.request("PATCH /repos/{owner}/{repo}/git/refs/heads/{ref}", {
     owner: owner,
     repo: repo,
@@ -212,7 +211,8 @@ async function cherryPickCommit(
     },
   });
 
-  if (DEBUG) console.log(commit.Id, "> D");
+  // -- merge the commit we want 
+  console.log("STEP 3D: ", commit.Id.slice(0, 6));
   const merge = await octokit.request("POST /repos/{owner}/{repo}/merges", {
     owner: owner,
     repo: repo,
@@ -224,7 +224,8 @@ async function cherryPickCommit(
     },
   });
 
-  if (DEBUG) console.log(commit.Id, "> E");
+  // -- create actual commit to be cherry pick
+  console.log("STEP 3E: ", commit.Id.slice(0, 6));
   const cherryPickCommit = await octokit.request(
     "POST /repos/{owner}/{repo}/git/commits",
     {
@@ -239,7 +240,8 @@ async function cherryPickCommit(
     }
   );
 
-  if (DEBUG) console.log(commit.Id, "> F");
+  // -- replace temp commit with cherry commit
+  console.log("STEP 3F: ", commit.Id.slice(0, 6));
   await octokit.request("PATCH /repos/{owner}/{repo}/git/refs/heads/{ref}", {
     owner: owner,
     repo: repo,
