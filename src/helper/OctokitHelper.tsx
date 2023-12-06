@@ -52,21 +52,31 @@ export async function getBranchesInRepo(
   repo: string
 ): Promise<string[]> {
   const octokit = instantiateOctokit(token);
+  const branches: string[] = [];
+  let pageNumber = 1;
+  let hasMoreData = true;
 
-  // TODO: could have more pages to retrieve from, can get that info from header > links
-  const response = await octokit.request("GET /repos/{owner}/{repo}/branches", {
-    owner: owner,
-    repo: repo,
-    per_page: 100,
-    headers: {
-      "X-GitHub-Api-Version": "2022-11-28",
-      "If-None-Match": `"${Date.now()}"`,
-    },
-  });
+  while (hasMoreData) {
+    const response = await octokit.request(
+      "GET /repos/{owner}/{repo}/branches",
+      {
+        owner: owner,
+        repo: repo,
+        per_page: 100,
+        page: pageNumber,
+        headers: {
+          "X-GitHub-Api-Version": "2022-11-28",
+          "If-None-Match": `"${Date.now()}"`,
+        },
+      }
+    );
 
-  return response.data.map((branch) => {
-    return branch.name;
-  });
+    response.data.forEach((branch) => branches.push(branch.name));
+    hasMoreData = response.data.length > 0;
+    pageNumber++;
+  }
+
+  return branches;
 }
 
 export async function createCherryPickPR(
