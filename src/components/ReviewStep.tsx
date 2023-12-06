@@ -12,6 +12,7 @@ import {
   Link,
   Autocomplete,
   Checkbox,
+  Tooltip,
 } from "@mui/material";
 import { FC, useEffect, useState } from "react";
 import {
@@ -22,7 +23,6 @@ import {
   getBranchesInRepo,
 } from "../helper/OctokitHelper";
 import CommitIcon from "@mui/icons-material/Commit";
-import { CheckBox } from "@mui/icons-material";
 
 const MAX_COMMIT_ID_LEN = 6;
 
@@ -45,20 +45,21 @@ const CommitListItem = (
 ) => {
   return (
     <ListItem key={index}>
-      <ListItemIcon>
-        <Checkbox
-          edge="end"
-          onChange={() => {
-            handleCheckboxChange(item);
-          }}
-          checked={item.ToCherryPick}
-        />
-      </ListItemIcon>
+      <Tooltip title="If checked, commit will be cherry-picked">
+        <ListItemIcon>
+          <Checkbox
+            onChange={() => {
+              handleCheckboxChange(item);
+            }}
+            checked={item.ToCherryPick}
+          />
+        </ListItemIcon>
+      </Tooltip>
       <ListItemIcon>
         <CommitIcon />
       </ListItemIcon>
       <ListItemText
-        primary={item.Message}
+        primary={index + 1 + ") " + item.Message}
         secondary={item.Id.slice(0, MAX_COMMIT_ID_LEN)}
       ></ListItemText>
     </ListItem>
