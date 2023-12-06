@@ -4,7 +4,7 @@ Link to app: https://nkrama-99.github.io/github-cherry-pick-ui-tool/
 
 ## About
 
-This tool simplifies the process of merging changes from one branch into another. You will need a [Personal Access Token](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens) from GitHub to use this tool.
+This tool simplifies the process of merging changes from one branch into another. You will need a [Personal Access Token](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens) from GitHub to use this tool (classic token with just full repo access should suffice).
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
