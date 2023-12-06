@@ -6,6 +6,7 @@ export interface Commit {
   Id: string;
   Message: string;
   ParentSha: string;
+  ToCherryPick: boolean;
 }
 
 const instantiateOctokit = (token: string) => {
@@ -40,6 +41,7 @@ export async function getCommitsInPR(
       Id: commitInfo.sha,
       Message: commitInfo.commit.message,
       ParentSha: commitInfo.parents[0].sha,
+      ToCherryPick: true,
     };
   });
 }
@@ -111,17 +113,19 @@ export async function createCherryPickPR(
     // -- start picking
     console.log("STEP 3: Cherry pick all commits");
     for (var index = 0; index < commits.length; index++) {
-      console.log(
-        "STEP 3 : Commit #" + (index + 1) + " -",
-        commits[index].Id.slice(0, 6)
-      );
-      await cherryPickCommit(
-        commits[index],
-        octokit,
-        owner,
-        repo,
-        newBranchName
-      );
+      if (commits[index].ToCherryPick) {
+        console.log(
+          "STEP 3 : Commit #" + (index + 1) + " -",
+          commits[index].Id.slice(0, 6)
+        );
+        await cherryPickCommit(
+          commits[index],
+          octokit,
+          owner,
+          repo,
+          newBranchName
+        );
+      }
     }
 
     // -- create PR

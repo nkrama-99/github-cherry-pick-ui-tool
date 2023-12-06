@@ -11,6 +11,7 @@ import {
   ListItemIcon,
   Link,
   Autocomplete,
+  Checkbox,
 } from "@mui/material";
 import { FC, useEffect, useState } from "react";
 import {
@@ -21,6 +22,7 @@ import {
   getBranchesInRepo,
 } from "../helper/OctokitHelper";
 import CommitIcon from "@mui/icons-material/Commit";
+import { CheckBox } from "@mui/icons-material";
 
 const MAX_COMMIT_ID_LEN = 6;
 
@@ -36,9 +38,22 @@ interface ReviewStepProps {
   setTargetBranch: React.Dispatch<React.SetStateAction<string>>;
 }
 
-const CommitListItem = (item: Commit, index: number) => {
+const CommitListItem = (
+  item: Commit,
+  index: number,
+  handleCheckboxChange: (changedCommit: Commit) => void
+) => {
   return (
     <ListItem key={index}>
+      <ListItemIcon>
+        <Checkbox
+          edge="end"
+          onChange={() => {
+            handleCheckboxChange(item);
+          }}
+          checked={item.ToCherryPick}
+        />
+      </ListItemIcon>
       <ListItemIcon>
         <CommitIcon />
       </ListItemIcon>
@@ -69,7 +84,9 @@ const ReviewStep: FC<ReviewStepProps> = ({
   useEffect(() => {
     const retrieveData = async () => {
       const prInfo = await getPrInfo(owner, repo, pr, githubToken);
-      setBranches(await getBranchesInRepo(githubToken, prInfo.sourceRepoOwner, repo));
+      setBranches(
+        await getBranchesInRepo(githubToken, prInfo.sourceRepoOwner, repo)
+      );
       setCommits(await getCommitsInPR(githubToken, owner, repo, pr));
       setPrTitle(prInfo.prTitle);
     };
@@ -93,6 +110,17 @@ const ReviewStep: FC<ReviewStepProps> = ({
     } else {
       console.log("Invalid inputs!");
     }
+  };
+
+  const handleCheckboxChange = (changedCommit: Commit) => {
+    setCommits((prevCommits) => {
+      const updatedCommits = prevCommits.map((commit) =>
+        commit.Id === changedCommit.Id
+          ? { ...commit, ToCherryPick: !commit.ToCherryPick } // Toggle the toCherryPick value
+          : commit
+      );
+      return updatedCommits;
+    });
   };
 
   function renderFailure() {
@@ -133,7 +161,9 @@ const ReviewStep: FC<ReviewStepProps> = ({
               <Typography variant="h6">PR: {prTitle}</Typography>
             </Link>
             <List>
-              {commits.map((item, index) => CommitListItem(item, index))}
+              {commits.map((item, index) =>
+                CommitListItem(item, index, handleCheckboxChange)
+              )}
             </List>
           </Grid>
           <Grid item xs={12} sm={6}>
