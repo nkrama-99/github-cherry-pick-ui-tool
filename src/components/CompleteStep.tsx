@@ -1,6 +1,15 @@
-import { Typography, Container, Paper, Box, Link } from "@mui/material";
+import {
+  Typography,
+  Container,
+  Paper,
+  Box,
+  Link,
+  IconButton,
+} from "@mui/material";
 import { FC, useEffect, useState } from "react";
 import { Commit, createCherryPickPR, getPrInfo } from "../helper/OctokitHelper";
+import { CopyToClipboard } from "react-copy-to-clipboard";
+import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 
 interface CompleteStepProps {
   githubToken: string;
@@ -103,14 +112,24 @@ const CompleteStep: FC<CompleteStepProps> = ({
         <Typography component="h1" variant="h4" align="center" padding={"10px"}>
           Success!
         </Typography>
-        <Link
-          href={newPrUrl}
-          target="_blank"
-          rel="noopener noreferrer"
-          align="center"
+        <Box
+          sx={{ display: "flex", justifyContent: "center" }}
+          padding={"20px"}
         >
-          <Typography variant="h6">{newPrUrl}</Typography>
-        </Link>
+          <Link
+            href={newPrUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            align="center"
+          >
+            <Typography variant="h6">{newPrUrl}</Typography>
+          </Link>
+          <CopyToClipboard text={newPrUrl}>
+            <IconButton>
+              <ContentCopyIcon fontSize="small" />
+            </IconButton>
+          </CopyToClipboard>
+        </Box>
         <Box
           sx={{ display: "flex", justifyContent: "center" }}
           padding={"20px"}
