@@ -30,6 +30,7 @@ export async function getCommitsInPR(
       pull_number: prNumber,
       headers: {
         "X-GitHub-Api-Version": "2022-11-28",
+        "If-None-Match": `"${Date.now()}"`,
       },
     }
   );
@@ -57,6 +58,7 @@ export async function getBranchesInRepo(
     per_page: 100,
     headers: {
       "X-GitHub-Api-Version": "2022-11-28",
+      "If-None-Match": `"${Date.now()}"`,
     },
   });
 
@@ -119,7 +121,7 @@ export async function createCherryPickPR(
         owner,
         repo,
         newBranchName
-      )
+      );
     }
 
     // -- create PR
@@ -160,6 +162,7 @@ async function createPrToTargetBranch(
     base: targetBranch,
     headers: {
       "X-GitHub-Api-Version": "2022-11-28",
+      "If-None-Match": `"${Date.now()}"`,
     },
   });
   return res.data.html_url;
@@ -182,6 +185,7 @@ async function cherryPickCommit(
       branch: newBranchName,
       headers: {
         "X-GitHub-Api-Version": "2022-11-28",
+        "If-None-Match": `"${Date.now()}"`,
       },
     }
   );
@@ -198,6 +202,7 @@ async function cherryPickCommit(
       parents: [commit.ParentSha],
       headers: {
         "X-GitHub-Api-Version": "2022-11-28",
+        "If-None-Match": `"${Date.now()}"`,
       },
     }
   );
@@ -212,6 +217,7 @@ async function cherryPickCommit(
     force: true,
     headers: {
       "X-GitHub-Api-Version": "2022-11-28",
+      "If-None-Match": `"${Date.now()}"`,
     },
   });
 
@@ -225,6 +231,7 @@ async function cherryPickCommit(
     force: true,
     headers: {
       "X-GitHub-Api-Version": "2022-11-28",
+      "If-None-Match": `"${Date.now()}"`,
     },
   });
 
@@ -240,6 +247,7 @@ async function cherryPickCommit(
       parents: [newBranchInfo.data.commit.sha],
       headers: {
         "X-GitHub-Api-Version": "2022-11-28",
+        "If-None-Match": `"${Date.now()}"`,
       },
     }
   );
@@ -254,6 +262,7 @@ async function cherryPickCommit(
     force: true,
     headers: {
       "X-GitHub-Api-Version": "2022-11-28",
+      "If-None-Match": `"${Date.now()}"`,
     },
   });
 }
@@ -272,6 +281,7 @@ async function createNewBranch(
     sha: targetBranchBaseCommitSha,
     headers: {
       "X-GitHub-Api-Version": "2022-11-28",
+      "If-None-Match": `"${Date.now()}"`,
     },
   });
 }
@@ -290,6 +300,7 @@ async function getTargetBranchInfo(
       branch: targetBranch,
       headers: {
         "X-GitHub-Api-Version": "2022-11-28",
+        "If-None-Match": `"${Date.now()}"`,
       },
     }
   );
@@ -316,6 +327,7 @@ export async function getPrInfo(
       pull_number: pr,
       headers: {
         "X-GitHub-Api-Version": "2022-11-28",
+        "If-None-Match": `"${Date.now()}"`,
       },
     }
   );
