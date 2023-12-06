@@ -67,7 +67,7 @@ const CompleteStep: FC<CompleteStepProps> = ({
         <Box sx={{ display: "flex", justifyContent: "center" }}>
           <img
             alt=""
-            src={process.env.PUBLIC_URL + "/drizzy-loading.gif"}
+            src={process.env.PUBLIC_URL + "/cherry-loading.gif"}
           ></img>
         </Box>
       </>
