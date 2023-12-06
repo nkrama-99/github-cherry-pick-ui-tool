@@ -10,6 +10,7 @@ import { FC, useEffect, useState } from "react";
 import { Commit, createCherryPickPR, getPrInfo } from "../helper/OctokitHelper";
 import { CopyToClipboard } from "react-copy-to-clipboard";
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
+import ReactTyped from "react-typed";
 
 interface CompleteStepProps {
   githubToken: string;
@@ -71,7 +72,15 @@ const CompleteStep: FC<CompleteStepProps> = ({
     return (
       <>
         <Typography component="h1" variant="h6" align="center" gutterBottom>
-          Picking cherries...
+          <div>
+            <ReactTyped
+              strings={["Picking Cherries...", "Picking Cher", "Pick", "P", "Picking", "Cherries"]}
+              typeSpeed={40}
+              loop
+              backSpeed={20}
+              showCursor={true}
+            />
+          </div>
         </Typography>
         <Box sx={{ display: "flex", justifyContent: "center" }}>
           <img

@@ -23,6 +23,7 @@ import {
   getBranchesInRepo,
 } from "../helper/OctokitHelper";
 import CommitIcon from "@mui/icons-material/Commit";
+import ReactTyped from "react-typed";
 
 const MAX_COMMIT_ID_LEN = 6;
 
@@ -210,7 +211,15 @@ const ReviewStep: FC<ReviewStepProps> = ({
     return (
       <>
         <Typography component="h1" variant="h6" align="center" gutterBottom>
-          Fetching...
+          <div>
+            <ReactTyped
+              strings={["Fetching...", "Fetc", "Fetchi"]}
+              typeSpeed={20}
+              loop
+              backSpeed={20}
+              showCursor={true}
+            />
+          </div>
         </Typography>
       </>
     );
