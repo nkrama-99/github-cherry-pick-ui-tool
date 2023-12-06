@@ -109,13 +109,17 @@ export async function createCherryPickPR(
     // -- start picking
     console.log("STEP 3: Cherry pick all commits");
     for (var index = 0; index < commits.length; index++) {
+      console.log(
+        "STEP 3 : Commit #" + (index + 1) + " -",
+        commits[index].Id.slice(0, 6)
+      );
       await cherryPickCommit(
         commits[index],
         octokit,
         owner,
         repo,
         newBranchName
-      );
+      )
     }
 
     // -- create PR
@@ -211,7 +215,7 @@ async function cherryPickCommit(
     },
   });
 
-  // -- merge the commit we want 
+  // -- merge the commit we want
   console.log("STEP 3D: ", commit.Id.slice(0, 6));
   const merge = await octokit.request("POST /repos/{owner}/{repo}/merges", {
     owner: owner,
