@@ -12,7 +12,7 @@ const Footer: FC = () => {
       {"Copyright © "}
       <Link
         color="inherit"
-        href="https://www.linkedin.com/in/ramakrishna-natarajan/"
+        href="https://www.youtube.com/watch?v=XqpQpt_cmhE&ab_channel=DrakeVEVO"
       >
         Drizzy
       </Link>{" "}
